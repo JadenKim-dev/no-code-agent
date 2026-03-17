@@ -1,7 +1,7 @@
 package com.nocodeagent.platform.agent;
 
 import com.nocodeagent.platform.stream.ExecutionEvent;
-import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -11,20 +11,23 @@ public class AgentExecutionService {
     private final AgentDefinitionService agentDefinitionService;
     private final SpringAiAgentRunner springAiAgentRunner;
     private final FallbackAgentRunner fallbackAgentRunner;
+    private final boolean demoMode;
 
     public AgentExecutionService(
         AgentDefinitionService agentDefinitionService,
-        ObjectProvider<SpringAiAgentRunner> springAiAgentRunner,
-        FallbackAgentRunner fallbackAgentRunner
+        SpringAiAgentRunner springAiAgentRunner,
+        FallbackAgentRunner fallbackAgentRunner,
+        @Value("${spring.ai.openai.api-key:demo-key}") String apiKey
     ) {
         this.agentDefinitionService = agentDefinitionService;
-        this.springAiAgentRunner = springAiAgentRunner.getIfAvailable();
+        this.springAiAgentRunner = springAiAgentRunner;
         this.fallbackAgentRunner = fallbackAgentRunner;
+        this.demoMode = "demo-key".equals(apiKey);
     }
 
     public Flux<ExecutionEvent> run(String agentId, String input) {
         AgentDefinition definition = agentDefinitionService.get(agentId);
-        Flux<ExecutionEvent> springAiResult = springAiAgentRunner == null ? Flux.empty() : springAiAgentRunner.run(definition, input);
-        return springAiResult.switchIfEmpty(fallbackAgentRunner.run(definition, input));
+        AgentRunner runner = demoMode ? fallbackAgentRunner : springAiAgentRunner;
+        return runner.run(definition, input);
     }
 }

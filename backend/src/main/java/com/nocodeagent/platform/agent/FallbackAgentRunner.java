@@ -7,7 +7,6 @@ import com.nocodeagent.platform.tool.ToolRegistry;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.ai.tool.ToolCallback;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
@@ -16,24 +15,17 @@ public class FallbackAgentRunner implements AgentRunner {
 
     private final ToolRegistry toolRegistry;
     private final ObjectMapper objectMapper;
-    private final String apiKey;
 
     public FallbackAgentRunner(
         ToolRegistry toolRegistry,
-        ObjectMapper objectMapper,
-        @Value("${spring.ai.openai.api-key:demo-key}") String apiKey
+        ObjectMapper objectMapper
     ) {
         this.toolRegistry = toolRegistry;
         this.objectMapper = objectMapper;
-        this.apiKey = apiKey;
     }
 
     @Override
     public Flux<ExecutionEvent> run(AgentDefinition definition, String input) {
-        if (!"demo-key".equals(apiKey)) {
-            return Flux.empty();
-        }
-
         List<ExecutionEvent> events = new ArrayList<>();
         events.add(ExecutionEvent.messageToken("Running fallback agent for "));
         events.add(ExecutionEvent.messageToken(definition.name() + ". "));
