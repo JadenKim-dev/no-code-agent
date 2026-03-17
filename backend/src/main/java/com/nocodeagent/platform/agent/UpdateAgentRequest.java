@@ -1,0 +1,14 @@
+package com.nocodeagent.platform.agent;
+
+import jakarta.validation.constraints.NotBlank;
+import java.util.List;
+
+public record UpdateAgentRequest(
+    @NotBlank String name,
+    String description,
+    @NotBlank String goal,
+    @NotBlank String systemPrompt,
+    List<String> enabledTools,
+    String defaultInput
+) {
+}
