@@ -32,6 +32,7 @@ export function AgentForm({ initialValues, onSubmit }: AgentFormProps) {
       className="grid gap-5"
       onSubmit={(event) => {
         event.preventDefault();
+        if (!values.name.trim()) return;
         void onSubmit(values);
       }}
     >
