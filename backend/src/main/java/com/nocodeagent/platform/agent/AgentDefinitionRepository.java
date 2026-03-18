@@ -1,13 +1,9 @@
 package com.nocodeagent.platform.agent;
 
 import java.util.List;
-import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AgentDefinitionRepository {
+public interface AgentDefinitionRepository extends JpaRepository<AgentDefinition, String> {
 
-    AgentDefinition save(AgentDefinition definition);
-
-    Optional<AgentDefinition> findById(String id);
-
-    List<AgentDefinition> findAll();
+    List<AgentDefinition> findAllByOrderByUpdatedAtDesc();
 }

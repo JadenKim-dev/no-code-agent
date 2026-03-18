@@ -53,7 +53,7 @@ public class AgentDefinitionService {
     }
 
     public List<AgentDefinition> list() {
-        return repository.findAll();
+        return repository.findAllByOrderByUpdatedAtDesc();
     }
 
     public AgentDefinition get(String id) {
