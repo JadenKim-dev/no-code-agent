@@ -88,7 +88,7 @@ class AgentDefinitionServiceTest {
     void get_throwsNotFoundForUnknownId() {
         when(repository.findById("missing-id")).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.get("missing-id"))
+        assertThatThrownBy(() -> service.getById("missing-id"))
             .isInstanceOf(ResponseStatusException.class);
     }
 
@@ -100,7 +100,7 @@ class AgentDefinitionServiceTest {
         );
         when(repository.findById("id-1")).thenReturn(Optional.of(definition));
 
-        AgentDefinition result = service.get("id-1");
+        AgentDefinition result = service.getById("id-1");
 
         assertThat(result.id()).isEqualTo("id-1");
     }

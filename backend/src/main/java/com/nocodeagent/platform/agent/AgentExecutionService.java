@@ -26,7 +26,7 @@ public class AgentExecutionService {
     }
 
     public Flux<ExecutionEvent> run(String agentId, String input) {
-        AgentDefinition definition = agentDefinitionService.get(agentId);
+        AgentDefinition definition = agentDefinitionService.getById(agentId);
         AgentRunner runner = demoMode ? fallbackAgentRunner : springAiAgentRunner;
         return runner.run(definition, input);
     }

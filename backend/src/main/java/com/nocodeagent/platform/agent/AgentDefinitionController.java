@@ -24,12 +24,12 @@ public class AgentDefinitionController {
 
     @GetMapping
     public List<AgentDefinition> list() {
-        return service.list();
+        return service.findAll();
     }
 
     @GetMapping("/{id}")
     public AgentDefinition get(@PathVariable String id) {
-        return service.get(id);
+        return service.getById(id);
     }
 
     @PostMapping

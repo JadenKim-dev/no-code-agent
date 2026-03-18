@@ -35,7 +35,7 @@ public class AgentDefinitionService {
     }
 
     public AgentDefinition update(String id, UpdateAgentRequest request) {
-        AgentDefinition existing = get(id);
+        AgentDefinition existing = getById(id);
         validateTools(request.enabledTools());
         AgentDefinition updated = new AgentDefinition(
             existing.id(),
@@ -52,11 +52,11 @@ public class AgentDefinitionService {
         return repository.save(updated);
     }
 
-    public List<AgentDefinition> list() {
+    public List<AgentDefinition> findAll() {
         return repository.findAllByOrderByUpdatedAtDesc();
     }
 
-    public AgentDefinition get(String id) {
+    public AgentDefinition getById(String id) {
         return repository.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agent not found: " + id));
     }
