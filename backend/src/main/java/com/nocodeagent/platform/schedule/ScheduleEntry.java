@@ -3,6 +3,7 @@ package com.nocodeagent.platform.schedule;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,16 +11,11 @@ import lombok.NoArgsConstructor;
 @Table(name = "schedule_entry")
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class ScheduleEntry {
 
     @Id
     private String id;
     private String title;
     private String scheduledFor;
-
-    public ScheduleEntry(String id, String title, String scheduledFor) {
-        this.id = id;
-        this.title = title;
-        this.scheduledFor = scheduledFor;
-    }
 }

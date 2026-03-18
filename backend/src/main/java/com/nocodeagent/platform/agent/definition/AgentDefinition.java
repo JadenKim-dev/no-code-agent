@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "agent_definition")
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class AgentDefinition {
 
     @Id
@@ -30,19 +32,4 @@ public class AgentDefinition {
     private String defaultInput;
     private Instant createdAt;
     private Instant updatedAt;
-
-    public AgentDefinition(String id, String name, String description, String type, String goal,
-                           String systemPrompt, List<String> enabledTools, String defaultInput,
-                           Instant createdAt, Instant updatedAt) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.type = type;
-        this.goal = goal;
-        this.systemPrompt = systemPrompt;
-        this.enabledTools = enabledTools;
-        this.defaultInput = defaultInput;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
 }
