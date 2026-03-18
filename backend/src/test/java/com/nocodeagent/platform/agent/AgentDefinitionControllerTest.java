@@ -11,23 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest(properties = "spring.ai.openai.api-key=demo-key")
+@SpringBootTest(properties = {
+    "spring.ai.openai.api-key=demo-key",
+    "spring.datasource.url=jdbc:sqlite::memory:"
+})
 @AutoConfigureMockMvc
 class AgentDefinitionControllerTest {
 
     @Autowired
     MockMvc mockMvc;
-
-    @DynamicPropertySource
-    static void storageProperties(DynamicPropertyRegistry registry) {
-        String runId = java.util.UUID.randomUUID().toString();
-        registry.add("app.storage.agents-dir", () -> java.nio.file.Path.of("target/test-agents-" + runId).toAbsolutePath().toString());
-        registry.add("app.storage.schedules-file", () -> java.nio.file.Path.of("target/test-schedules-" + runId, "schedules.json").toAbsolutePath().toString());
-    }
 
     @Test
     void createsAndListsAgentDefinitions() throws Exception {

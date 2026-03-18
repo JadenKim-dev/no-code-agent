@@ -1,5 +1,6 @@
 package com.nocodeagent.platform.schedule;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -21,7 +22,7 @@ public class ScheduleEntry {
         this.scheduledFor = scheduledFor;
     }
 
-    public String id() { return id; }
-    public String title() { return title; }
-    public String scheduledFor() { return scheduledFor; }
+    @JsonProperty public String id() { return id; }
+    @JsonProperty public String title() { return title; }
+    @JsonProperty public String scheduledFor() { return scheduledFor; }
 }

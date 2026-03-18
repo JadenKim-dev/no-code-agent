@@ -1,5 +1,6 @@
 package com.nocodeagent.platform.agent;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -43,14 +44,14 @@ public class AgentDefinition {
         this.updatedAt = updatedAt;
     }
 
-    public String id() { return id; }
-    public String name() { return name; }
-    public String description() { return description; }
-    public String type() { return type; }
-    public String goal() { return goal; }
-    public String systemPrompt() { return systemPrompt; }
-    public List<String> enabledTools() { return enabledTools; }
-    public String defaultInput() { return defaultInput; }
-    public Instant createdAt() { return createdAt; }
-    public Instant updatedAt() { return updatedAt; }
+    @JsonProperty public String id() { return id; }
+    @JsonProperty public String name() { return name; }
+    @JsonProperty public String description() { return description; }
+    @JsonProperty public String type() { return type; }
+    @JsonProperty public String goal() { return goal; }
+    @JsonProperty public String systemPrompt() { return systemPrompt; }
+    @JsonProperty public List<String> enabledTools() { return enabledTools; }
+    @JsonProperty public String defaultInput() { return defaultInput; }
+    @JsonProperty public Instant createdAt() { return createdAt; }
+    @JsonProperty public Instant updatedAt() { return updatedAt; }
 }
