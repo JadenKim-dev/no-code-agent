@@ -7,6 +7,13 @@ import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.definition.ToolDefinition;
 import org.springframework.ai.tool.metadata.ToolMetadata;
 
+/**
+ * A decorator that wraps a {@link ToolCallback} to observe tool execution.
+ * <p>
+ * Publishes {@link ExecutionEvent}s at each stage of tool execution — start, result, and error —
+ * enabling real-time streaming of execution state to clients via SSE or similar mechanisms.
+ * </p>
+ */
 public class ObservedToolCallback implements ToolCallback {
 
     private final ToolCallback delegate;
