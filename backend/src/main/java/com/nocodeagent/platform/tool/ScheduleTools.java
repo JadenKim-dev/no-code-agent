@@ -6,20 +6,16 @@ import com.nocodeagent.platform.schedule.ScheduleEntry;
 import com.nocodeagent.platform.schedule.ScheduleEntryRepository;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ScheduleTools {
 
     private final ScheduleEntryRepository scheduleEntryRepository;
     private final ReminderEntryRepository reminderEntryRepository;
-
-    public ScheduleTools(ScheduleEntryRepository scheduleEntryRepository,
-                         ReminderEntryRepository reminderEntryRepository) {
-        this.scheduleEntryRepository = scheduleEntryRepository;
-        this.reminderEntryRepository = reminderEntryRepository;
-    }
 
     @Tool(description = "Create a schedule entry with title and ISO-8601 datetime")
     public String createSchedule(String title, String scheduledFor) {

@@ -2,6 +2,7 @@ package com.nocodeagent.platform.tool;
 
 import com.nocodeagent.platform.stream.ExecutionEvent;
 import java.util.function.Consumer;
+import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.model.ToolContext;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.definition.ToolDefinition;
@@ -14,15 +15,11 @@ import org.springframework.ai.tool.metadata.ToolMetadata;
  * enabling real-time streaming of execution state to clients via SSE or similar mechanisms.
  * </p>
  */
+@RequiredArgsConstructor
 public class ObservedToolCallback implements ToolCallback {
 
     private final ToolCallback delegate;
     private final Consumer<ExecutionEvent> eventConsumer;
-
-    public ObservedToolCallback(ToolCallback delegate, Consumer<ExecutionEvent> eventConsumer) {
-        this.delegate = delegate;
-        this.eventConsumer = eventConsumer;
-    }
 
     @Override
     public ToolDefinition getToolDefinition() {

@@ -4,6 +4,7 @@ import com.nocodeagent.platform.agent.AgentExecutionService;
 import com.nocodeagent.platform.agent.AgentRunRequest;
 import jakarta.validation.Valid;
 import java.io.IOException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,13 +15,10 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
 @RequestMapping("/api/agents")
+@RequiredArgsConstructor
 public class ExecutionStreamController {
 
     private final AgentExecutionService executionService;
-
-    public ExecutionStreamController(AgentExecutionService executionService) {
-        this.executionService = executionService;
-    }
 
     @PostMapping(path = "/{id}/runs/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter run(@PathVariable String id, @Valid @RequestBody AgentRunRequest request) {

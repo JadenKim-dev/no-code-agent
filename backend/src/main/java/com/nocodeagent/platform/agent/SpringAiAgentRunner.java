@@ -3,24 +3,18 @@ package com.nocodeagent.platform.agent;
 import com.nocodeagent.platform.stream.ExecutionEvent;
 import com.nocodeagent.platform.tool.ToolRegistry;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
 @Component
+@RequiredArgsConstructor
 public class SpringAiAgentRunner implements AgentRunner {
 
     private final ChatClient.Builder chatClientBuilder;
     private final ToolRegistry toolRegistry;
-
-    public SpringAiAgentRunner(
-        ChatClient.Builder chatClientBuilder,
-        ToolRegistry toolRegistry
-    ) {
-        this.chatClientBuilder = chatClientBuilder;
-        this.toolRegistry = toolRegistry;
-    }
 
     @Override
     public Flux<ExecutionEvent> run(AgentDefinition definition, String input) {

@@ -6,23 +6,17 @@ import com.nocodeagent.platform.stream.ExecutionEvent;
 import com.nocodeagent.platform.tool.ToolRegistry;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
 @Component
+@RequiredArgsConstructor
 public class FallbackAgentRunner implements AgentRunner {
 
     private final ToolRegistry toolRegistry;
     private final ObjectMapper objectMapper;
-
-    public FallbackAgentRunner(
-        ToolRegistry toolRegistry,
-        ObjectMapper objectMapper
-    ) {
-        this.toolRegistry = toolRegistry;
-        this.objectMapper = objectMapper;
-    }
 
     @Override
     public Flux<ExecutionEvent> run(AgentDefinition definition, String input) {
