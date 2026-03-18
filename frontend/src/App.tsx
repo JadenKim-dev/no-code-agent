@@ -1,4 +1,3 @@
-import { useEffect, useState, useTransition } from "react";
 import { Activity, Bot, LayoutPanelLeft, PlayCircle, Sparkles } from "lucide-react";
 import { Badge } from "./components/ui/badge";
 import { Button } from "./components/ui/button";
@@ -8,66 +7,24 @@ import { Textarea } from "./components/ui/textarea";
 import { AgentForm } from "./features/agents/AgentForm";
 import { AgentList } from "./features/agents/AgentList";
 import { TemplateGallery } from "./features/agents/TemplateGallery";
-import type { AgentDefinition, AgentFormValues, AgentTemplate } from "./features/agents/types";
+import { useAgentWorkspace } from "./features/agents/useAgentWorkspace";
 import { RunConsole } from "./features/run-console/RunConsole";
-import type { RunEvent } from "./features/run-console/types";
-import { createAgent, fetchAgents, fetchTemplates, streamAgentRun, updateAgent } from "./lib/api";
-
-const blankFormValues: AgentFormValues = {
-  name: "",
-  description: "",
-  type: "custom",
-  goal: "",
-  systemPrompt: "",
-  enabledTools: ["currentTime"],
-  defaultInput: ""
-};
 
 export default function App() {
-  const [templates, setTemplates] = useState<AgentTemplate[]>([]);
-  const [agents, setAgents] = useState<AgentDefinition[]>([]);
-  const [selectedAgent, setSelectedAgent] = useState<AgentDefinition | null>(null);
-  const [formValues, setFormValues] = useState<AgentFormValues>(blankFormValues);
-  const [events, setEvents] = useState<RunEvent[]>([]);
-  const [runInput, setRunInput] = useState("");
-  const [isPending, startTransition] = useTransition();
-
-  useEffect(() => {
-    void Promise.all([fetchTemplates(), fetchAgents()]).then(([loadedTemplates, loadedAgents]) => {
-      setTemplates(loadedTemplates);
-      setAgents(loadedAgents);
-      if (loadedAgents[0]) {
-        setSelectedAgent(loadedAgents[0]);
-        setFormValues(toFormValues(loadedAgents[0]));
-        setRunInput(loadedAgents[0].defaultInput);
-      }
-    });
-  }, []);
-
-  async function handleSave(values: AgentFormValues) {
-    const saved = selectedAgent
-      ? await updateAgent(selectedAgent.id, values)
-      : await createAgent(values);
-
-    startTransition(() => {
-      setSelectedAgent(saved);
-      setFormValues(toFormValues(saved));
-      setRunInput(saved.defaultInput);
-      setAgents((current) => [saved, ...current.filter((agent) => agent.id !== saved.id)]);
-    });
-  }
-
-  async function handleRun() {
-    if (!selectedAgent) {
-      return;
-    }
-    setEvents([]);
-    await streamAgentRun(selectedAgent.id, runInput || selectedAgent.defaultInput, (event) => {
-      startTransition(() => {
-        setEvents((current) => [...current, event]);
-      });
-    });
-  }
+  const {
+    templates,
+    agents,
+    selectedAgent,
+    formValues,
+    events,
+    runInput,
+    setRunInput,
+    isPending,
+    handleSelectTemplate,
+    handleSelectAgent,
+    handleSave,
+    handleRun
+  } = useAgentWorkspace();
 
   return (
     <main className="mx-auto min-h-screen max-w-[1600px] px-4 py-6 md:px-6 xl:px-8">
@@ -109,23 +66,7 @@ export default function App() {
                   <h2 className="text-sm font-semibold text-slate-950">Templates</h2>
                   <p className="text-sm text-slate-500">Fast entry points for common tool and prompt combinations.</p>
                 </div>
-                <TemplateGallery
-                  templates={templates}
-                  onSelect={(template) => {
-                    const nextValues = {
-                      name: template.name,
-                      description: template.description,
-                      type: template.type,
-                      goal: template.goal,
-                      systemPrompt: template.systemPrompt,
-                      enabledTools: template.enabledTools,
-                      defaultInput: template.defaultInput
-                    };
-                    setSelectedAgent(null);
-                    setFormValues(nextValues);
-                    setRunInput(template.defaultInput);
-                  }}
-                />
+                <TemplateGallery templates={templates} onSelect={handleSelectTemplate} />
               </div>
               <Separator />
               <div className="space-y-3">
@@ -133,15 +74,7 @@ export default function App() {
                   <h2 className="text-sm font-semibold text-slate-950">Saved Agents</h2>
                   <p className="text-sm text-slate-500">Resume a previous configuration and move straight into execution.</p>
                 </div>
-                <AgentList
-                  agents={agents}
-                  selectedAgentId={selectedAgent?.id ?? null}
-                  onSelect={(agent) => {
-                    setSelectedAgent(agent);
-                    setFormValues(toFormValues(agent));
-                    setRunInput(agent.defaultInput);
-                  }}
-                />
+                <AgentList agents={agents} selectedAgentId={selectedAgent?.id ?? null} onSelect={handleSelectAgent} />
               </div>
             </CardContent>
           </Card>
@@ -207,18 +140,6 @@ export default function App() {
       </div>
     </main>
   );
-}
-
-function toFormValues(agent: AgentDefinition): AgentFormValues {
-  return {
-    name: agent.name,
-    description: agent.description,
-    type: agent.type,
-    goal: agent.goal,
-    systemPrompt: agent.systemPrompt,
-    enabledTools: agent.enabledTools,
-    defaultInput: agent.defaultInput
-  };
 }
 
 function MetricCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {

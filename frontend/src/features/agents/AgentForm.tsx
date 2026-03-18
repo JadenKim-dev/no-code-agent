@@ -9,10 +9,10 @@ import { cn } from "../../lib/utils";
 import type { AgentFormValues } from "./types";
 
 const TOOL_OPTIONS = [
-  "currentTime",
-  "listSchedules",
-  "createSchedule",
-  "createReminder"
+  { id: "currentTime", description: "Expose current date and time for time-sensitive prompts." },
+  { id: "listSchedules", description: "Read persisted schedule entries and summarize the current plan." },
+  { id: "createSchedule", description: "Write a schedule entry to local storage for follow-up actions." },
+  { id: "createReminder", description: "Register reminders that the agent can confirm back to the user." }
 ] as const;
 
 type AgentFormProps = {
@@ -124,30 +124,30 @@ export function AgentForm({ initialValues, onSubmit }: AgentFormProps) {
             <div className="grid gap-3 md:grid-cols-2">
               {TOOL_OPTIONS.map((tool) => (
                 <label
-                  key={tool}
+                  key={tool.id}
                   className={cn(
                     "flex cursor-pointer items-start gap-3 rounded-2xl border p-3 transition",
-                    values.enabledTools.includes(tool)
+                    values.enabledTools.includes(tool.id)
                       ? "border-sky-200 bg-sky-50"
                       : "border-slate-200 bg-white hover:border-slate-300"
                   )}
                 >
                   <input
-                    checked={values.enabledTools.includes(tool)}
+                    checked={values.enabledTools.includes(tool.id)}
                     type="checkbox"
                     className="mt-1 h-4 w-4 rounded border-slate-300 text-sky-600"
                     onChange={() =>
                       setValues((current) => ({
                         ...current,
-                        enabledTools: current.enabledTools.includes(tool)
-                          ? current.enabledTools.filter((item) => item !== tool)
-                          : [...current.enabledTools, tool]
+                        enabledTools: current.enabledTools.includes(tool.id)
+                          ? current.enabledTools.filter((item) => item !== tool.id)
+                          : [...current.enabledTools, tool.id]
                       }))
                     }
                   />
                   <div className="grid gap-1">
-                    <span className="text-sm font-medium text-slate-900">{tool}</span>
-                    <span className="text-xs leading-5 text-slate-500">{toolDescriptions[tool]}</span>
+                    <span className="text-sm font-medium text-slate-900">{tool.id}</span>
+                    <span className="text-xs leading-5 text-slate-500">{tool.description}</span>
                   </div>
                 </label>
               ))}
@@ -158,10 +158,3 @@ export function AgentForm({ initialValues, onSubmit }: AgentFormProps) {
     </form>
   );
 }
-
-const toolDescriptions: Record<(typeof TOOL_OPTIONS)[number], string> = {
-  currentTime: "Expose current date and time for time-sensitive prompts.",
-  listSchedules: "Read persisted schedule entries and summarize the current plan.",
-  createSchedule: "Write a schedule entry to local storage for follow-up actions.",
-  createReminder: "Register reminders that the agent can confirm back to the user."
-};
