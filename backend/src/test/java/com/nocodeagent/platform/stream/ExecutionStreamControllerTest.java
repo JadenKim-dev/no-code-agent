@@ -5,8 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.nocodeagent.platform.agent.AgentDefinitionService;
-import com.nocodeagent.platform.agent.CreateAgentRequest;
+import com.nocodeagent.platform.agent.definition.AgentDefinitionService;
+import com.nocodeagent.platform.agent.definition.CreateAgentRequest;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

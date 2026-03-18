@@ -1,4 +1,4 @@
-package com.nocodeagent.platform.agent;
+package com.nocodeagent.platform.agent.definition;
 
 import java.time.Instant;
 import java.util.List;

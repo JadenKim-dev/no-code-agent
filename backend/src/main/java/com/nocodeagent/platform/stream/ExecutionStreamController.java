@@ -1,7 +1,7 @@
 package com.nocodeagent.platform.stream;
 
-import com.nocodeagent.platform.agent.AgentExecutionService;
-import com.nocodeagent.platform.agent.AgentRunRequest;
+import com.nocodeagent.platform.agent.execution.AgentExecutionService;
+import com.nocodeagent.platform.agent.execution.AgentRunRequest;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;

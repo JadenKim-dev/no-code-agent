@@ -1,4 +1,4 @@
-package com.nocodeagent.platform.agent;
+package com.nocodeagent.platform.agent.definition;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package com.nocodeagent.platform.agent;
+package com.nocodeagent.platform.agent.execution;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nocodeagent.platform.agent.definition.AgentDefinition;
 import com.nocodeagent.platform.stream.ExecutionEvent;
 import com.nocodeagent.platform.tool.ToolRegistry;
 import java.time.Instant;

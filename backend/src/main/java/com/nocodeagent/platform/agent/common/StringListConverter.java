@@ -1,4 +1,4 @@
-package com.nocodeagent.platform.agent;
+package com.nocodeagent.platform.agent.common;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

@@ -1,10 +1,10 @@
-package com.nocodeagent.platform.agent;
+package com.nocodeagent.platform.agent.template;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-class SchedulerTemplateProviderTest {
+class AgentTemplateProviderTest {
 
     private final AgentTemplateProvider provider = new AgentTemplateProvider();
 

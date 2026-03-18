@@ -1,4 +1,4 @@
-package com.nocodeagent.platform.agent;
+package com.nocodeagent.platform.agent.execution;
 
 import jakarta.validation.constraints.NotBlank;
 

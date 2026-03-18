@@ -1,5 +1,6 @@
-package com.nocodeagent.platform.agent;
+package com.nocodeagent.platform.agent.execution;
 
+import com.nocodeagent.platform.agent.definition.AgentDefinition;
 import com.nocodeagent.platform.stream.ExecutionEvent;
 import com.nocodeagent.platform.tool.ToolRegistry;
 import java.util.List;

@@ -1,5 +1,6 @@
-package com.nocodeagent.platform.agent;
+package com.nocodeagent.platform.agent.definition;
 
+import com.nocodeagent.platform.agent.common.StringListConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;

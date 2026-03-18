@@ -1,4 +1,4 @@
-package com.nocodeagent.platform.agent;
+package com.nocodeagent.platform.agent.template;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;

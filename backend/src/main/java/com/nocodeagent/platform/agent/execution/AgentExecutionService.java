@@ -1,5 +1,7 @@
-package com.nocodeagent.platform.agent;
+package com.nocodeagent.platform.agent.execution;
 
+import com.nocodeagent.platform.agent.definition.AgentDefinition;
+import com.nocodeagent.platform.agent.definition.AgentDefinitionService;
 import com.nocodeagent.platform.stream.ExecutionEvent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

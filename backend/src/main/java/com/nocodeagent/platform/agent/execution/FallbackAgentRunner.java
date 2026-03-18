@@ -1,7 +1,8 @@
-package com.nocodeagent.platform.agent;
+package com.nocodeagent.platform.agent.execution;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nocodeagent.platform.agent.definition.AgentDefinition;
 import com.nocodeagent.platform.stream.ExecutionEvent;
 import com.nocodeagent.platform.tool.ToolRegistry;
 import java.util.ArrayList;
