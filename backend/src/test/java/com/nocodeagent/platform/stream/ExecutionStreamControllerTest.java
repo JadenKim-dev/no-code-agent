@@ -47,7 +47,7 @@ class ExecutionStreamControllerTest {
             "be helpful",
             List.of("currentTime", "listSchedules"),
             "what time is it?"
-        )).id();
+        )).getId();
     }
 
     @Test

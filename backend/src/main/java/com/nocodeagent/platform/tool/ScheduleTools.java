@@ -21,14 +21,14 @@ public class ScheduleTools {
     public String createSchedule(String title, String scheduledFor) {
         var entry = scheduleEntryRepository.save(
             new ScheduleEntry(UUID.randomUUID().toString(), title, scheduledFor));
-        return "Scheduled '" + entry.title() + "' for " + entry.scheduledFor();
+        return "Scheduled '" + entry.getTitle() + "' for " + entry.getScheduledFor();
     }
 
     @Tool(description = "Create a reminder with title and ISO-8601 datetime")
     public String createReminder(String title, String remindAt) {
         var entry = reminderEntryRepository.save(
             new ReminderEntry(UUID.randomUUID().toString(), title, remindAt));
-        return "Reminder '" + entry.title() + "' set for " + entry.remindAt();
+        return "Reminder '" + entry.getTitle() + "' set for " + entry.getRemindAt();
     }
 
     @Tool(description = "List all current schedules")
@@ -38,7 +38,7 @@ public class ScheduleTools {
             return "No schedules found.";
         }
         return schedules.stream()
-            .map(entry -> "- %s at %s".formatted(entry.title(), entry.scheduledFor()))
+            .map(entry -> "- %s at %s".formatted(entry.getTitle(), entry.getScheduledFor()))
             .collect(Collectors.joining("\n"));
     }
 }

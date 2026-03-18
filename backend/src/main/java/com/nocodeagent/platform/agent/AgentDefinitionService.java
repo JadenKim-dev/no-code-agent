@@ -36,15 +36,15 @@ public class AgentDefinitionService {
         AgentDefinition existing = getById(id);
         validateTools(request.enabledTools());
         AgentDefinition updated = new AgentDefinition(
-            existing.id(),
+            existing.getId(),
             request.name().trim(),
-            normalize(existing.description()),
-            existing.type(),
+            normalize(existing.getDescription()),
+            existing.getType(),
             request.goal().trim(),
             request.systemPrompt().trim(),
             normalizeTools(request.enabledTools()),
             normalize(request.defaultInput()),
-            existing.createdAt(),
+            existing.getCreatedAt(),
             Instant.now()
         );
         return repository.save(updated);

@@ -1,12 +1,15 @@
 package com.nocodeagent.platform.schedule;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "schedule_entry")
+@Getter
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class ScheduleEntry {
 
     @Id
@@ -14,15 +17,9 @@ public class ScheduleEntry {
     private String title;
     private String scheduledFor;
 
-    protected ScheduleEntry() {}
-
     public ScheduleEntry(String id, String title, String scheduledFor) {
         this.id = id;
         this.title = title;
         this.scheduledFor = scheduledFor;
     }
-
-    @JsonProperty public String id() { return id; }
-    @JsonProperty public String title() { return title; }
-    @JsonProperty public String scheduledFor() { return scheduledFor; }
 }

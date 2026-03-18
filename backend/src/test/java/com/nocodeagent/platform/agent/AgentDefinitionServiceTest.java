@@ -38,8 +38,8 @@ class AgentDefinitionServiceTest {
             List.of("currentTime"), "what time is it?"
         ));
 
-        assertThat(result.name()).isEqualTo("Planner");
-        assertThat(result.enabledTools()).containsExactly("currentTime");
+        assertThat(result.getName()).isEqualTo("Planner");
+        assertThat(result.getEnabledTools()).containsExactly("currentTime");
         verify(repository).save(any());
     }
 
@@ -52,8 +52,8 @@ class AgentDefinitionServiceTest {
             List.of("currentTime"), ""
         ));
 
-        assertThat(result.name()).isEqualTo("Planner");
-        assertThat(result.goal()).isEqualTo("help users");
+        assertThat(result.getName()).isEqualTo("Planner");
+        assertThat(result.getGoal()).isEqualTo("help users");
     }
 
     @Test
@@ -81,7 +81,7 @@ class AgentDefinitionServiceTest {
             List.of("currentTime", "currentTime"), ""
         ));
 
-        assertThat(result.enabledTools()).hasSize(1);
+        assertThat(result.getEnabledTools()).hasSize(1);
     }
 
     @Test
@@ -102,7 +102,7 @@ class AgentDefinitionServiceTest {
 
         AgentDefinition result = service.getById("id-1");
 
-        assertThat(result.id()).isEqualTo("id-1");
+        assertThat(result.getId()).isEqualTo("id-1");
     }
 
     @Test
@@ -118,8 +118,8 @@ class AgentDefinitionServiceTest {
             "New Name", "", "new goal", "new prompt", List.of("listSchedules"), ""
         ));
 
-        assertThat(result.name()).isEqualTo("New Name");
-        assertThat(result.goal()).isEqualTo("new goal");
-        assertThat(result.enabledTools()).containsExactly("listSchedules");
+        assertThat(result.getName()).isEqualTo("New Name");
+        assertThat(result.getGoal()).isEqualTo("new goal");
+        assertThat(result.getEnabledTools()).containsExactly("listSchedules");
     }
 }

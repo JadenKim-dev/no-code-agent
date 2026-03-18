@@ -22,7 +22,7 @@ public class FallbackAgentRunner implements AgentRunner {
     public Flux<ExecutionEvent> run(AgentDefinition definition, String input) {
         List<ExecutionEvent> events = new ArrayList<>();
         events.add(ExecutionEvent.messageToken("Running fallback agent for "));
-        events.add(ExecutionEvent.messageToken(definition.name() + ". "));
+        events.add(ExecutionEvent.messageToken(definition.getName() + ". "));
         String lowerInput = input.toLowerCase();
 
         if (containsAny(lowerInput, "schedule", "일정")) {

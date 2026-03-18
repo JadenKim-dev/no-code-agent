@@ -1,6 +1,5 @@
 package com.nocodeagent.platform.agent;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -8,9 +7,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "agent_definition")
+@Getter
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class AgentDefinition {
 
     @Id
@@ -27,8 +30,6 @@ public class AgentDefinition {
     private Instant createdAt;
     private Instant updatedAt;
 
-    protected AgentDefinition() {}
-
     public AgentDefinition(String id, String name, String description, String type, String goal,
                            String systemPrompt, List<String> enabledTools, String defaultInput,
                            Instant createdAt, Instant updatedAt) {
@@ -43,15 +44,4 @@ public class AgentDefinition {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
-
-    @JsonProperty public String id() { return id; }
-    @JsonProperty public String name() { return name; }
-    @JsonProperty public String description() { return description; }
-    @JsonProperty public String type() { return type; }
-    @JsonProperty public String goal() { return goal; }
-    @JsonProperty public String systemPrompt() { return systemPrompt; }
-    @JsonProperty public List<String> enabledTools() { return enabledTools; }
-    @JsonProperty public String defaultInput() { return defaultInput; }
-    @JsonProperty public Instant createdAt() { return createdAt; }
-    @JsonProperty public Instant updatedAt() { return updatedAt; }
 }
