@@ -19,23 +19,14 @@ public class AppProperties {
     }
 
     public static class Storage {
-        private Path agentsDir = Path.of("./data/agents");
-        private Path schedulesFile = Path.of("./data/schedules/schedules.json");
+        private Path dataDir = Path.of("./data");
 
-        public Path getAgentsDir() {
-            return agentsDir;
+        public Path getDataDir() {
+            return dataDir;
         }
 
-        public void setAgentsDir(Path agentsDir) {
-            this.agentsDir = agentsDir;
-        }
-
-        public Path getSchedulesFile() {
-            return schedulesFile;
-        }
-
-        public void setSchedulesFile(Path schedulesFile) {
-            this.schedulesFile = schedulesFile;
+        public void setDataDir(Path dataDir) {
+            this.dataDir = dataDir;
         }
     }
 
