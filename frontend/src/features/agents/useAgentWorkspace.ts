@@ -3,6 +3,8 @@ import type { AgentDefinition, AgentFormValues, AgentTemplate } from "./types";
 import type { RunEvent } from "../run-console/types";
 import { createAgent, fetchAgents, fetchTemplates, streamAgentRun, updateAgent } from "../../lib/api";
 
+type Tab = "build" | "run";
+
 const blankFormValues: AgentFormValues = {
   name: "",
   description: "",
@@ -32,6 +34,7 @@ export function useAgentWorkspace() {
   const [formValues, setFormValues] = useState<AgentFormValues>(blankFormValues);
   const [events, setEvents] = useState<RunEvent[]>([]);
   const [runInput, setRunInput] = useState("");
+  const [activeTab, setActiveTab] = useState<Tab>("build");
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
@@ -58,12 +61,20 @@ export function useAgentWorkspace() {
       defaultInput: template.defaultInput
     });
     setRunInput(template.defaultInput);
+    setActiveTab("build");
   }
 
   function handleSelectAgent(agent: AgentDefinition) {
     setSelectedAgent(agent);
     setFormValues(toFormValues(agent));
     setRunInput(agent.defaultInput);
+    setActiveTab("build");
+  }
+
+  function handleNewAgent() {
+    setSelectedAgent(null);
+    setFormValues(blankFormValues);
+    setActiveTab("build");
   }
 
   async function handleSave(values: AgentFormValues) {
@@ -76,6 +87,7 @@ export function useAgentWorkspace() {
       setFormValues(toFormValues(saved));
       setRunInput(saved.defaultInput);
       setAgents((current) => [saved, ...current.filter((agent) => agent.id !== saved.id)]);
+      setActiveTab("run");
     });
   }
 
@@ -100,8 +112,11 @@ export function useAgentWorkspace() {
     runInput,
     setRunInput,
     isPending,
+    activeTab,
+    setActiveTab,
     handleSelectTemplate,
     handleSelectAgent,
+    handleNewAgent,
     handleSave,
     handleRun
   };
