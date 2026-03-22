@@ -38,8 +38,8 @@ public class AgentDefinitionService {
         AgentDefinition updated = new AgentDefinition(
             existing.getId(),
             request.name().trim(),
-            normalize(existing.getDescription()),
-            existing.getType(),
+            normalize(request.description()),
+            request.type() != null ? request.type().trim() : existing.getType(),
             request.goal().trim(),
             request.systemPrompt().trim(),
             normalizeTools(request.enabledTools()),

@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class AgentDefinition {
-
     @Id
     private String id;
     private String name;
