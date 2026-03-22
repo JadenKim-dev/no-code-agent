@@ -1,14 +1,8 @@
-import { Activity, Bot, LayoutPanelLeft, PlayCircle, Sparkles } from "lucide-react";
-import { Badge } from "./components/ui/badge";
-import { Button } from "./components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./components/ui/card";
-import { Separator } from "./components/ui/separator";
-import { Textarea } from "./components/ui/textarea";
-import { AgentForm } from "./features/agents/AgentForm";
-import { AgentList } from "./features/agents/AgentList";
-import { TemplateGallery } from "./features/agents/TemplateGallery";
+import { AgentSidebar } from "./features/agents/AgentSidebar";
+import { BuildTab } from "./features/agents/BuildTab";
 import { useAgentWorkspace } from "./features/agents/useAgentWorkspace";
-import { RunConsole } from "./features/run-console/RunConsole";
+import { RunTab } from "./features/run-console/RunTab";
+import { cn } from "./lib/utils";
 
 export default function App() {
   const {
@@ -20,136 +14,87 @@ export default function App() {
     runInput,
     setRunInput,
     isPending,
+    activeTab,
+    setActiveTab,
     handleSelectTemplate,
     handleSelectAgent,
+    handleNewAgent,
     handleSave,
     handleRun
   } = useAgentWorkspace();
 
   return (
-    <main className="mx-auto min-h-screen max-w-[1600px] px-4 py-6 md:px-6 xl:px-8">
-      <section className="mb-6 rounded-[28px] border border-slate-200 bg-white/85 p-6 shadow-[0_20px_80px_rgba(15,23,42,0.08)] backdrop-blur md:p-8">
-        <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
-          <div className="space-y-4">
-            <Badge variant="accent" className="w-fit">
-              Spring AI Workspace
-            </Badge>
-            <div className="space-y-3">
-              <h1 className="text-3xl font-semibold tracking-tight text-slate-950 md:text-4xl">Agent Operations Console</h1>
-              <p className="max-w-3xl text-sm leading-7 text-slate-600 md:text-base">
-                Build a controlled agent definition, persist it, and observe tool-aware runtime behavior from a single operational workspace.
-              </p>
-            </div>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-3">
-            <MetricCard icon={<Sparkles className="h-4 w-4" />} label="Templates" value={String(templates.length + 1)} />
-            <MetricCard icon={<Bot className="h-4 w-4" />} label="Saved agents" value={String(agents.length)} />
-            <MetricCard icon={<Activity className="h-4 w-4" />} label="Stream events" value={String(events.length)} />
+    <div className="flex h-screen overflow-hidden bg-slate-50">
+      {/* Left panel */}
+      <AgentSidebar
+        agents={agents}
+        selectedAgentId={selectedAgent?.id ?? null}
+        onSelect={handleSelectAgent}
+        onNew={handleNewAgent}
+      />
+
+      {/* Right panel */}
+      <div className="flex flex-1 flex-col min-w-0">
+        {/* Tab bar */}
+        <div className="flex items-center bg-white border-b border-slate-200 px-6 h-12 flex-shrink-0">
+          <button
+            role="tab"
+            aria-selected={activeTab === "build"}
+            type="button"
+            className={cn(
+              "px-4 h-12 text-sm transition border-b-2",
+              activeTab === "build"
+                ? "border-slate-900 font-semibold text-slate-900"
+                : "border-transparent text-slate-400 hover:text-slate-600"
+            )}
+            onClick={() => setActiveTab("build")}
+          >
+            Build
+          </button>
+          <button
+            role="tab"
+            aria-selected={activeTab === "run"}
+            type="button"
+            className={cn(
+              "px-4 h-12 text-sm transition border-b-2",
+              activeTab === "run"
+                ? "border-slate-900 font-semibold text-slate-900"
+                : "border-transparent text-slate-400 hover:text-slate-600"
+            )}
+            onClick={() => setActiveTab("run")}
+          >
+            Run
+          </button>
+          <div className="ml-auto text-xs text-slate-400">
+            {selectedAgent ? (
+              <span>편집 중: <strong className="text-slate-700">{selectedAgent.name}</strong></span>
+            ) : (
+              <span>새 에이전트 작성 중</span>
+            )}
           </div>
         </div>
-      </section>
 
-      <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)_420px]">
-        <section aria-label="Resource Rail" className="grid gap-6 self-start">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center gap-2 text-slate-500">
-                <LayoutPanelLeft className="h-4 w-4" />
-                <Badge variant="default">Select</Badge>
-              </div>
-              <CardTitle>Resource Rail</CardTitle>
-              <CardDescription>Choose a starting template or reopen a saved agent definition before editing.</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-6">
-              <div className="space-y-3">
-                <div>
-                  <h2 className="text-sm font-semibold text-slate-950">Templates</h2>
-                  <p className="text-sm text-slate-500">Fast entry points for common tool and prompt combinations.</p>
-                </div>
-                <TemplateGallery templates={templates} onSelect={handleSelectTemplate} />
-              </div>
-              <Separator />
-              <div className="space-y-3">
-                <div>
-                  <h2 className="text-sm font-semibold text-slate-950">Saved Agents</h2>
-                  <p className="text-sm text-slate-500">Resume a previous configuration and move straight into execution.</p>
-                </div>
-                <AgentList agents={agents} selectedAgentId={selectedAgent?.id ?? null} onSelect={handleSelectAgent} />
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        <section aria-label="Builder Workspace" className="min-w-0">
-          <div className="mb-4 flex flex-wrap items-center gap-3">
-            <Badge variant="accent">Builder</Badge>
-            <span className="text-sm text-slate-500">
-              {selectedAgent ? `Editing saved agent: ${selectedAgent.name}` : "Editing a draft definition"}
-            </span>
-          </div>
-          <AgentForm
-            initialValues={formValues}
-            onSubmit={async (values) => {
-              await handleSave(values);
-            }}
-          />
-        </section>
-
-        <section aria-label="Run Workspace" className="grid gap-6 self-start">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center gap-2 text-slate-500">
-                <PlayCircle className="h-4 w-4" />
-                <Badge variant="warning">Runtime</Badge>
-              </div>
-              <CardTitle>Run Workspace</CardTitle>
-              <CardDescription>
-                Execute the selected definition and inspect the live event stream without leaving the current workspace.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-4">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <div className="mb-2 flex items-center justify-between gap-3">
-                  <div>
-                    <h2 className="text-sm font-semibold text-slate-950">Active Definition</h2>
-                    <p className="text-sm text-slate-500">
-                      {selectedAgent ? selectedAgent.name : "Select or save an agent to enable streaming"}
-                    </p>
-                  </div>
-                  <Badge variant={selectedAgent ? "success" : "default"}>{selectedAgent ? "Ready" : "Pending"}</Badge>
-                </div>
-              </div>
-              <label className="grid gap-2 text-sm font-medium text-slate-700">
-                Run Input
-                <Textarea
-                  aria-label="Run Input"
-                  className="min-h-[160px]"
-                  value={runInput}
-                  onChange={(event) => setRunInput(event.target.value)}
-                />
-              </label>
-              <Button type="button" size="lg" onClick={() => void handleRun()} disabled={!selectedAgent || isPending}>
-                <PlayCircle className="h-4 w-4" />
-                Stream Run
-              </Button>
-            </CardContent>
-          </Card>
-
-          <RunConsole events={events} />
-        </section>
+        {/* Tab content */}
+        <div className="flex-1 overflow-y-auto">
+          {activeTab === "build" ? (
+            <BuildTab
+              templates={templates}
+              formValues={formValues}
+              onSelectTemplate={handleSelectTemplate}
+              onSave={handleSave}
+            />
+          ) : (
+            <RunTab
+              selectedAgent={selectedAgent}
+              runInput={runInput}
+              onRunInputChange={setRunInput}
+              events={events}
+              isPending={isPending}
+              onRun={() => void handleRun()}
+            />
+          )}
+        </div>
       </div>
-    </main>
-  );
-}
-
-function MetricCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-      <div className="mb-2 flex items-center gap-2 text-slate-500">
-        {icon}
-        <span className="text-xs font-medium uppercase tracking-[0.14em]">{label}</span>
-      </div>
-      <div className="text-2xl font-semibold tracking-tight text-slate-950">{value}</div>
     </div>
   );
 }

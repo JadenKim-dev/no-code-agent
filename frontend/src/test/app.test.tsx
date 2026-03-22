@@ -1,10 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import App from "../App";
 
-it("renders the app shell", () => {
+it("renders the app shell with sidebar and tabs", () => {
   render(<App />);
-  expect(screen.getByRole("heading", { name: /agent operations console/i })).toBeInTheDocument();
-  expect(screen.getByRole("region", { name: /resource rail/i })).toBeInTheDocument();
-  expect(screen.getByRole("region", { name: /builder workspace/i })).toBeInTheDocument();
-  expect(screen.getByRole("region", { name: /run workspace/i })).toBeInTheDocument();
+  expect(screen.getByTestId("agent-sidebar")).toBeInTheDocument();
+  expect(screen.getByRole("tab", { name: /build/i })).toBeInTheDocument();
+  expect(screen.getByRole("tab", { name: /run/i })).toBeInTheDocument();
 });
