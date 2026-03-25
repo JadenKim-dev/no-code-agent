@@ -80,3 +80,29 @@ it("shows tool badges when expanded", () => {
   expect(screen.getByText("currentTime")).toBeInTheDocument();
   expect(screen.getByText("listSchedules")).toBeInTheDocument();
 });
+
+it("calls onOpenChange(false) when header is clicked while open", async () => {
+  const onOpenChange = vi.fn();
+  render(
+    <TemplateAccordion
+      templates={[schedulerTemplate]}
+      onSelect={vi.fn()}
+      open={true}
+      onOpenChange={onOpenChange}
+    />
+  );
+  await userEvent.click(screen.getByRole("button", { name: /Start from a template/i }));
+  expect(onOpenChange).toHaveBeenCalledWith(false);
+});
+
+it("renders with empty templates list without crashing", () => {
+  render(
+    <TemplateAccordion
+      templates={[]}
+      onSelect={vi.fn()}
+      open={true}
+      onOpenChange={vi.fn()}
+    />
+  );
+  expect(screen.getByRole("button", { name: /Start from a template/i })).toBeInTheDocument();
+});

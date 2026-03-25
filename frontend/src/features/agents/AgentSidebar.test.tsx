@@ -60,3 +60,17 @@ it("calls onNew when + New button is clicked", async () => {
   await userEvent.click(screen.getByRole("button", { name: /\+ New/i }));
   expect(onNew).toHaveBeenCalledOnce();
 });
+
+it("calls onSelect with the agent when an agent is clicked", async () => {
+  const onSelect = vi.fn();
+  render(<AgentSidebar agents={agents} selectedAgentId={null} onSelect={onSelect} onNew={vi.fn()} />);
+  await userEvent.click(screen.getByRole("button", { name: /Scheduler/i }));
+  expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: "1", name: "Scheduler" }));
+});
+
+it("filters agents case-insensitively", async () => {
+  render(<AgentSidebar agents={agents} selectedAgentId={null} onSelect={vi.fn()} onNew={vi.fn()} />);
+  await userEvent.type(screen.getByPlaceholderText(/Search agents/i), "sCHED");
+  expect(screen.getByText("Scheduler")).toBeInTheDocument();
+  expect(screen.queryByText("Reminder Bot")).not.toBeInTheDocument();
+});

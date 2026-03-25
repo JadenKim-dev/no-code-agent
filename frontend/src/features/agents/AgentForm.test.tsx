@@ -21,5 +21,12 @@ it("submits agent definition fields", async () => {
 
   await userEvent.click(screen.getByRole("button", { name: /save agent/i }));
 
-  expect(onSubmit).toHaveBeenCalled();
+  expect(onSubmit).toHaveBeenCalledWith(
+    expect.objectContaining({
+      name: "Planner",
+      goal: "Plan things",
+      systemPrompt: "You are a planner.",
+      enabledTools: ["currentTime"]
+    })
+  );
 });

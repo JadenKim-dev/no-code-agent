@@ -65,3 +65,35 @@ it("toggles tool checkbox and includes updated selection in onSubmit", async () 
     expect.objectContaining({ enabledTools: ["currentTime"] })
   );
 });
+
+it("does not call onSubmit when goal is empty", async () => {
+  const onSubmit = vi.fn();
+  render(
+    <AgentForm
+      initialValues={{ ...defaultValues, name: "Agent", systemPrompt: "You are..." }}
+      onSubmit={onSubmit}
+    />
+  );
+  await userEvent.click(screen.getByRole("button", { name: /save agent/i }));
+  expect(onSubmit).not.toHaveBeenCalled();
+});
+
+it("does not call onSubmit when systemPrompt is empty", async () => {
+  const onSubmit = vi.fn();
+  render(
+    <AgentForm
+      initialValues={{ ...defaultValues, name: "Agent", goal: "Do things" }}
+      onSubmit={onSubmit}
+    />
+  );
+  await userEvent.click(screen.getByRole("button", { name: /save agent/i }));
+  expect(onSubmit).not.toHaveBeenCalled();
+});
+
+it("shows required field error message after field is touched and left empty", async () => {
+  render(<AgentForm initialValues={defaultValues} onSubmit={vi.fn()} />);
+  // blur name 필드 — touched 상태가 되면서 에러 메시지 노출
+  await userEvent.click(screen.getByLabelText(/name/i));
+  await userEvent.tab();
+  expect(screen.getByText("This field is required.")).toBeInTheDocument();
+});
