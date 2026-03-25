@@ -1,18 +1,24 @@
-import { useEffect, useState, useTransition } from "react";
-import type { AgentDefinition, AgentFormValues, AgentTemplate } from "./types";
-import type { RunEvent } from "../run-console/types";
-import { createAgent, fetchAgents, fetchTemplates, streamAgentRun, updateAgent } from "../../lib/api";
+import { useEffect, useState, useTransition } from 'react';
+import type { AgentDefinition, AgentFormValues, AgentTemplate } from './types';
+import type { RunEvent } from '../run-console/types';
+import {
+  createAgent,
+  fetchAgents,
+  fetchTemplates,
+  streamAgentRun,
+  updateAgent,
+} from '../../lib/api';
 
-type Tab = "build" | "run";
+type Tab = 'build' | 'run';
 
 const blankFormValues: AgentFormValues = {
-  name: "",
-  description: "",
-  type: "custom",
-  goal: "",
-  systemPrompt: "",
-  enabledTools: ["currentTime"],
-  defaultInput: ""
+  name: '',
+  description: '',
+  type: 'custom',
+  goal: '',
+  systemPrompt: '',
+  enabledTools: ['currentTime'],
+  defaultInput: '',
 };
 
 function toFormValues(agent: AgentDefinition): AgentFormValues {
@@ -23,7 +29,7 @@ function toFormValues(agent: AgentDefinition): AgentFormValues {
     goal: agent.goal,
     systemPrompt: agent.systemPrompt,
     enabledTools: agent.enabledTools,
-    defaultInput: agent.defaultInput
+    defaultInput: agent.defaultInput,
   };
 }
 
@@ -33,8 +39,8 @@ export function useAgentWorkspace() {
   const [selectedAgent, setSelectedAgent] = useState<AgentDefinition | null>(null);
   const [formValues, setFormValues] = useState<AgentFormValues>(blankFormValues);
   const [events, setEvents] = useState<RunEvent[]>([]);
-  const [runInput, setRunInput] = useState("");
-  const [activeTab, setActiveTab] = useState<Tab>("build");
+  const [runInput, setRunInput] = useState('');
+  const [activeTab, setActiveTab] = useState<Tab>('build');
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
@@ -58,23 +64,23 @@ export function useAgentWorkspace() {
       goal: template.goal,
       systemPrompt: template.systemPrompt,
       enabledTools: template.enabledTools,
-      defaultInput: template.defaultInput
+      defaultInput: template.defaultInput,
     });
     setRunInput(template.defaultInput);
-    setActiveTab("build");
+    setActiveTab('build');
   }
 
   function handleSelectAgent(agent: AgentDefinition) {
     setSelectedAgent(agent);
     setFormValues(toFormValues(agent));
     setRunInput(agent.defaultInput);
-    setActiveTab("build");
+    setActiveTab('build');
   }
 
   function handleNewAgent() {
     setSelectedAgent(null);
     setFormValues(blankFormValues);
-    setActiveTab("build");
+    setActiveTab('build');
   }
 
   async function handleSave(values: AgentFormValues) {
@@ -92,7 +98,7 @@ export function useAgentWorkspace() {
       setFormValues(toFormValues(saved));
       setRunInput(saved.defaultInput);
       setAgents((current) => [saved, ...current.filter((agent) => agent.id !== saved.id)]);
-      setActiveTab("run");
+      setActiveTab('run');
     });
   }
 
@@ -123,6 +129,6 @@ export function useAgentWorkspace() {
     handleSelectAgent,
     handleNewAgent,
     handleSave,
-    handleRun
+    handleRun,
   };
 }

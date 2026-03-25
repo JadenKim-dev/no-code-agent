@@ -19,79 +19,75 @@ import org.springframework.ai.tool.definition.ToolDefinition;
 @ExtendWith(MockitoExtension.class)
 class ObservedToolCallbackTest {
 
-    @Mock
-    ToolCallback delegate;
+  @Mock ToolCallback delegate;
 
-    @Mock
-    ToolDefinition toolDefinition;
+  @Mock ToolDefinition toolDefinition;
 
-    List<ExecutionEvent> emittedEvents;
-    ObservedToolCallback callback;
+  List<ExecutionEvent> emittedEvents;
+  ObservedToolCallback callback;
 
-    @BeforeEach
-    void setUp() {
-        emittedEvents = new ArrayList<>();
-        when(delegate.getToolDefinition()).thenReturn(toolDefinition);
-        when(toolDefinition.name()).thenReturn("currentTime");
-        callback = new ObservedToolCallback(delegate, emittedEvents::add);
-    }
+  @BeforeEach
+  void setUp() {
+    emittedEvents = new ArrayList<>();
+    when(delegate.getToolDefinition()).thenReturn(toolDefinition);
+    when(toolDefinition.name()).thenReturn("currentTime");
+    callback = new ObservedToolCallback(delegate, emittedEvents::add);
+  }
 
-    @Test
-    void call_emitsToolCallStartEvent() {
-        when(delegate.call("{}")).thenReturn("2026-03-18T10:00:00");
+  @Test
+  void call_emitsToolCallStartEvent() {
+    when(delegate.call("{}")).thenReturn("2026-03-18T10:00:00");
 
-        callback.call("{}");
+    callback.call("{}");
 
-        assertThat(emittedEvents).anyMatch(event -> "tool-call-start".equals(event.type()));
-    }
+    assertThat(emittedEvents).anyMatch(event -> "tool-call-start".equals(event.type()));
+  }
 
-    @Test
-    void call_emitsToolCallResultEvent() {
-        when(delegate.call("{}")).thenReturn("2026-03-18T10:00:00");
+  @Test
+  void call_emitsToolCallResultEvent() {
+    when(delegate.call("{}")).thenReturn("2026-03-18T10:00:00");
 
-        callback.call("{}");
+    callback.call("{}");
 
-        assertThat(emittedEvents).anyMatch(event -> "tool-call-result".equals(event.type()));
-    }
+    assertThat(emittedEvents).anyMatch(event -> "tool-call-result".equals(event.type()));
+  }
 
-    @Test
-    void call_onFailure_emitsErrorEvent() {
-        when(delegate.call("{}")).thenThrow(new RuntimeException("tool error"));
+  @Test
+  void call_onFailure_emitsErrorEvent() {
+    when(delegate.call("{}")).thenThrow(new RuntimeException("tool error"));
 
-        assertThatThrownBy(() -> callback.call("{}"))
-            .isInstanceOf(RuntimeException.class);
+    assertThatThrownBy(() -> callback.call("{}")).isInstanceOf(RuntimeException.class);
 
-        assertThat(emittedEvents).anyMatch(event -> "error".equals(event.type()));
-    }
+    assertThat(emittedEvents).anyMatch(event -> "error".equals(event.type()));
+  }
 
-    @Test
-    void call_returnsDelegateResult() {
-        when(delegate.call("{}")).thenReturn("2026-03-18T10:00:00");
+  @Test
+  void call_returnsDelegateResult() {
+    when(delegate.call("{}")).thenReturn("2026-03-18T10:00:00");
 
-        String result = callback.call("{}");
+    String result = callback.call("{}");
 
-        assertThat(result).isEqualTo("2026-03-18T10:00:00");
-    }
+    assertThat(result).isEqualTo("2026-03-18T10:00:00");
+  }
 
-    @Test
-    void callWithContext_emitsToolCallStartAndResultEvents() {
-        ToolContext context = new ToolContext(java.util.Map.of());
-        when(delegate.call("{}", context)).thenReturn("2026-03-18T10:00:00");
+  @Test
+  void callWithContext_emitsToolCallStartAndResultEvents() {
+    ToolContext context = new ToolContext(java.util.Map.of());
+    when(delegate.call("{}", context)).thenReturn("2026-03-18T10:00:00");
 
-        callback.call("{}", context);
+    callback.call("{}", context);
 
-        assertThat(emittedEvents).anyMatch(event -> "tool-call-start".equals(event.type()));
-        assertThat(emittedEvents).anyMatch(event -> "tool-call-result".equals(event.type()));
-    }
+    assertThat(emittedEvents).anyMatch(event -> "tool-call-start".equals(event.type()));
+    assertThat(emittedEvents).anyMatch(event -> "tool-call-result".equals(event.type()));
+  }
 
-    @Test
-    void callWithContext_onFailure_emitsErrorEvent() {
-        ToolContext context = new ToolContext(java.util.Map.of());
-        when(delegate.call("{}", context)).thenThrow(new RuntimeException("tool error"));
+  @Test
+  void callWithContext_onFailure_emitsErrorEvent() {
+    ToolContext context = new ToolContext(java.util.Map.of());
+    when(delegate.call("{}", context)).thenThrow(new RuntimeException("tool error"));
 
-        assertThatThrownBy(() -> callback.call("{}", context))
-            .isInstanceOf(RuntimeException.class);
+    assertThatThrownBy(() -> callback.call("{}", context)).isInstanceOf(RuntimeException.class);
 
-        assertThat(emittedEvents).anyMatch(event -> "error".equals(event.type()));
-    }
+    assertThat(emittedEvents).anyMatch(event -> "error".equals(event.type()));
+  }
 }

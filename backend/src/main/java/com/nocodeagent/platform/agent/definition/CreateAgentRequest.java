@@ -10,6 +10,4 @@ public record CreateAgentRequest(
     @NotBlank String goal,
     @NotBlank String systemPrompt,
     List<String> enabledTools,
-    String defaultInput
-) {
-}
+    String defaultInput) {}

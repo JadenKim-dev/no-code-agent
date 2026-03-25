@@ -10,6 +10,4 @@ public record AgentTemplate(
     String goal,
     String systemPrompt,
     List<String> enabledTools,
-    String defaultInput
-) {
-}
+    String defaultInput) {}

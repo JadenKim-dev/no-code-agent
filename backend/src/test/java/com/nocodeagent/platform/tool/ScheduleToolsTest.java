@@ -19,60 +19,59 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class ScheduleToolsTest {
 
-    @Mock
-    ScheduleEntryRepository scheduleEntryRepository;
+  @Mock ScheduleEntryRepository scheduleEntryRepository;
 
-    @Mock
-    ReminderEntryRepository reminderEntryRepository;
+  @Mock ReminderEntryRepository reminderEntryRepository;
 
-    ScheduleTools tools;
+  ScheduleTools tools;
 
-    @BeforeEach
-    void setUp() {
-        tools = new ScheduleTools(scheduleEntryRepository, reminderEntryRepository);
-    }
+  @BeforeEach
+  void setUp() {
+    tools = new ScheduleTools(scheduleEntryRepository, reminderEntryRepository);
+  }
 
-    @Test
-    void createSchedule_savesEntryAndReturnsConfirmation() {
-        when(scheduleEntryRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+  @Test
+  void createSchedule_savesEntryAndReturnsConfirmation() {
+    when(scheduleEntryRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        String result = tools.createSchedule("Team sync", "2026-03-18T10:00:00");
+    String result = tools.createSchedule("Team sync", "2026-03-18T10:00:00");
 
-        assertThat(result).contains("Team sync");
-        assertThat(result).contains("2026-03-18T10:00:00");
-        verify(scheduleEntryRepository).save(any(ScheduleEntry.class));
-    }
+    assertThat(result).contains("Team sync");
+    assertThat(result).contains("2026-03-18T10:00:00");
+    verify(scheduleEntryRepository).save(any(ScheduleEntry.class));
+  }
 
-    @Test
-    void createReminder_savesEntryAndReturnsConfirmation() {
-        when(reminderEntryRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+  @Test
+  void createReminder_savesEntryAndReturnsConfirmation() {
+    when(reminderEntryRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        String result = tools.createReminder("Submit report", "2026-03-18T08:30:00");
+    String result = tools.createReminder("Submit report", "2026-03-18T08:30:00");
 
-        assertThat(result).contains("Submit report");
-        assertThat(result).contains("2026-03-18T08:30:00");
-        verify(reminderEntryRepository).save(any(ReminderEntry.class));
-    }
+    assertThat(result).contains("Submit report");
+    assertThat(result).contains("2026-03-18T08:30:00");
+    verify(reminderEntryRepository).save(any(ReminderEntry.class));
+  }
 
-    @Test
-    void listSchedules_returnsFormattedList() {
-        when(scheduleEntryRepository.findAll()).thenReturn(List.of(
-            new ScheduleEntry("id-1", "Team sync", "2026-03-18T10:00:00"),
-            new ScheduleEntry("id-2", "1:1 with manager", "2026-03-18T14:00:00")
-        ));
+  @Test
+  void listSchedules_returnsFormattedList() {
+    when(scheduleEntryRepository.findAll())
+        .thenReturn(
+            List.of(
+                new ScheduleEntry("id-1", "Team sync", "2026-03-18T10:00:00"),
+                new ScheduleEntry("id-2", "1:1 with manager", "2026-03-18T14:00:00")));
 
-        String result = tools.listSchedules();
+    String result = tools.listSchedules();
 
-        assertThat(result).contains("Team sync");
-        assertThat(result).contains("1:1 with manager");
-    }
+    assertThat(result).contains("Team sync");
+    assertThat(result).contains("1:1 with manager");
+  }
 
-    @Test
-    void listSchedules_whenEmpty_returnsNoSchedulesMessage() {
-        when(scheduleEntryRepository.findAll()).thenReturn(List.of());
+  @Test
+  void listSchedules_whenEmpty_returnsNoSchedulesMessage() {
+    when(scheduleEntryRepository.findAll()).thenReturn(List.of());
 
-        String result = tools.listSchedules();
+    String result = tools.listSchedules();
 
-        assertThat(result).contains("No schedules found");
-    }
+    assertThat(result).contains("No schedules found");
+  }
 }

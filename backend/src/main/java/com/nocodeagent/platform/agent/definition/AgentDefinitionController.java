@@ -18,26 +18,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AgentDefinitionController {
 
-    private final AgentDefinitionService service;
+  private final AgentDefinitionService service;
 
-    @GetMapping
-    public List<AgentDefinition> list() {
-        return service.findAll();
-    }
+  @GetMapping
+  public List<AgentDefinition> list() {
+    return service.findAll();
+  }
 
-    @GetMapping("/{id}")
-    public AgentDefinition get(@PathVariable String id) {
-        return service.getById(id);
-    }
+  @GetMapping("/{id}")
+  public AgentDefinition get(@PathVariable String id) {
+    return service.getById(id);
+  }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public AgentDefinition create(@Valid @RequestBody CreateAgentRequest request) {
-        return service.create(request);
-    }
+  @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  public AgentDefinition create(@Valid @RequestBody CreateAgentRequest request) {
+    return service.create(request);
+  }
 
-    @PutMapping("/{id}")
-    public AgentDefinition update(@PathVariable String id, @Valid @RequestBody UpdateAgentRequest request) {
-        return service.update(id, request);
-    }
+  @PutMapping("/{id}")
+  public AgentDefinition update(
+      @PathVariable String id, @Valid @RequestBody UpdateAgentRequest request) {
+    return service.update(id, request);
+  }
 }

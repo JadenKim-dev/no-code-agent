@@ -1,8 +1,8 @@
-import { AgentSidebar } from "./features/agents/AgentSidebar";
-import { BuildTab } from "./features/agents/BuildTab";
-import { useAgentWorkspace } from "./features/agents/useAgentWorkspace";
-import { RunTab } from "./features/run-console/RunTab";
-import { cn } from "./lib/utils";
+import { AgentSidebar } from './features/agents/AgentSidebar';
+import { BuildTab } from './features/agents/BuildTab';
+import { useAgentWorkspace } from './features/agents/useAgentWorkspace';
+import { RunTab } from './features/run-console/RunTab';
+import { cn } from './lib/utils';
 
 export default function App() {
   const {
@@ -20,7 +20,7 @@ export default function App() {
     handleSelectAgent,
     handleNewAgent,
     handleSave,
-    handleRun
+    handleRun,
   } = useAgentWorkspace();
 
   return (
@@ -39,35 +39,37 @@ export default function App() {
         <div className="flex items-center bg-white border-b border-slate-200 px-6 h-12 flex-shrink-0">
           <button
             role="tab"
-            aria-selected={activeTab === "build"}
+            aria-selected={activeTab === 'build'}
             type="button"
             className={cn(
-              "px-4 h-12 text-sm transition border-b-2",
-              activeTab === "build"
-                ? "border-slate-900 font-semibold text-slate-900"
-                : "border-transparent text-slate-400 hover:text-slate-600"
+              'px-4 h-12 text-sm transition border-b-2',
+              activeTab === 'build'
+                ? 'border-slate-900 font-semibold text-slate-900'
+                : 'border-transparent text-slate-400 hover:text-slate-600',
             )}
-            onClick={() => setActiveTab("build")}
+            onClick={() => setActiveTab('build')}
           >
             Build
           </button>
           <button
             role="tab"
-            aria-selected={activeTab === "run"}
+            aria-selected={activeTab === 'run'}
             type="button"
             className={cn(
-              "px-4 h-12 text-sm transition border-b-2",
-              activeTab === "run"
-                ? "border-slate-900 font-semibold text-slate-900"
-                : "border-transparent text-slate-400 hover:text-slate-600"
+              'px-4 h-12 text-sm transition border-b-2',
+              activeTab === 'run'
+                ? 'border-slate-900 font-semibold text-slate-900'
+                : 'border-transparent text-slate-400 hover:text-slate-600',
             )}
-            onClick={() => setActiveTab("run")}
+            onClick={() => setActiveTab('run')}
           >
             Run
           </button>
           <div className="ml-auto text-xs text-slate-400">
             {selectedAgent ? (
-              <span>Editing: <strong className="text-slate-700">{selectedAgent.name}</strong></span>
+              <span>
+                Editing: <strong className="text-slate-700">{selectedAgent.name}</strong>
+              </span>
             ) : (
               <span>New agent</span>
             )}
@@ -76,7 +78,7 @@ export default function App() {
 
         {/* Tab content */}
         <div className="flex-1 overflow-y-auto">
-          {activeTab === "build" ? (
+          {activeTab === 'build' ? (
             <BuildTab
               templates={templates}
               formValues={formValues}

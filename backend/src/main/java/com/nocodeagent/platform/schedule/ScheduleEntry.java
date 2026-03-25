@@ -14,8 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ScheduleEntry {
 
-    @Id
-    private String id;
-    private String title;
-    private String scheduledFor;
+  @Id private String id;
+  private String title;
+  private String scheduledFor;
 }

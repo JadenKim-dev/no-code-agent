@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { AgentForm } from "./AgentForm";
-import { TemplateAccordion } from "./TemplateAccordion";
-import type { AgentFormValues, AgentTemplate } from "./types";
+import { useState } from 'react';
+import { AgentForm } from './AgentForm';
+import { TemplateAccordion } from './TemplateAccordion';
+import type { AgentFormValues, AgentTemplate } from './types';
 
 type BuildTabProps = {
   templates: AgentTemplate[];

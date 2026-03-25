@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import type { AgentFormValues } from "./types";
+import { useEffect, useRef, useState } from 'react';
+import type { AgentFormValues } from './types';
 
-const REQUIRED_FIELDS = ["name", "goal", "systemPrompt"] as const;
-type RequiredField = typeof REQUIRED_FIELDS[number];
+const REQUIRED_FIELDS = ['name', 'goal', 'systemPrompt'] as const;
+type RequiredField = (typeof REQUIRED_FIELDS)[number];
 
 export function useAgentForm(initialValues: AgentFormValues) {
   const [values, setValues] = useState(initialValues);
@@ -15,7 +15,7 @@ export function useAgentForm(initialValues: AgentFormValues) {
     prevRef.current = serialized;
     setValues(initialValues);
     setTouched(new Set());
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serialized]);
 
   const isValid = REQUIRED_FIELDS.every((f) => values[f].trim());

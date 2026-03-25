@@ -1,6 +1,7 @@
 package com.nocodeagent.platform.tool;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import com.nocodeagent.platform.schedule.ReminderEntryRepository;
 import com.nocodeagent.platform.schedule.ScheduleEntryRepository;
 import com.nocodeagent.platform.stream.ExecutionEvent;
@@ -16,58 +17,59 @@ import org.springframework.ai.tool.ToolCallback;
 @ExtendWith(MockitoExtension.class)
 class ToolRegistryTest {
 
-    @Mock
-    ScheduleEntryRepository scheduleEntryRepository;
+  @Mock ScheduleEntryRepository scheduleEntryRepository;
 
-    @Mock
-    ReminderEntryRepository reminderEntryRepository;
+  @Mock ReminderEntryRepository reminderEntryRepository;
 
-    ToolRegistry registry;
+  ToolRegistry registry;
 
-    @BeforeEach
-    void setUp() {
-        DateTimeTools dateTimeTools = new DateTimeTools();
-        ScheduleTools scheduleTools = new ScheduleTools(scheduleEntryRepository, reminderEntryRepository);
-        registry = new ToolRegistry(dateTimeTools, scheduleTools);
-    }
+  @BeforeEach
+  void setUp() {
+    DateTimeTools dateTimeTools = new DateTimeTools();
+    ScheduleTools scheduleTools =
+        new ScheduleTools(scheduleEntryRepository, reminderEntryRepository);
+    registry = new ToolRegistry(dateTimeTools, scheduleTools);
+  }
 
-    @Test
-    void supportedToolNames_includesAllRegisteredTools() {
-        List<String> names = registry.supportedToolNames();
+  @Test
+  void supportedToolNames_includesAllRegisteredTools() {
+    List<String> names = registry.supportedToolNames();
 
-        assertThat(names).contains("currentTime", "createSchedule", "createReminder", "listSchedules");
-    }
+    assertThat(names).contains("currentTime", "createSchedule", "createReminder", "listSchedules");
+  }
 
-    @Test
-    void resolve_returnsOnlyRequestedTools() {
-        List<ExecutionEvent> events = new ArrayList<>();
-        List<ToolCallback> callbacks = registry.resolve(List.of("currentTime"), events::add);
+  @Test
+  void resolve_returnsOnlyRequestedTools() {
+    List<ExecutionEvent> events = new ArrayList<>();
+    List<ToolCallback> callbacks = registry.resolve(List.of("currentTime"), events::add);
 
-        assertThat(callbacks).hasSize(1);
-        assertThat(callbacks.get(0).getToolDefinition().name()).isEqualTo("currentTime");
-    }
+    assertThat(callbacks).hasSize(1);
+    assertThat(callbacks.get(0).getToolDefinition().name()).isEqualTo("currentTime");
+  }
 
-    @Test
-    void resolve_filtersOutUnknownToolNames() {
-        List<ExecutionEvent> events = new ArrayList<>();
-        List<ToolCallback> callbacks = registry.resolve(List.of("unknownTool", "currentTime"), events::add);
+  @Test
+  void resolve_filtersOutUnknownToolNames() {
+    List<ExecutionEvent> events = new ArrayList<>();
+    List<ToolCallback> callbacks =
+        registry.resolve(List.of("unknownTool", "currentTime"), events::add);
 
-        assertThat(callbacks).hasSize(1);
-        assertThat(callbacks.get(0).getToolDefinition().name()).isEqualTo("currentTime");
-    }
+    assertThat(callbacks).hasSize(1);
+    assertThat(callbacks.get(0).getToolDefinition().name()).isEqualTo("currentTime");
+  }
 
-    @Test
-    void resolve_deduplicatesToolNames() {
-        List<ExecutionEvent> events = new ArrayList<>();
-        List<ToolCallback> callbacks = registry.resolve(List.of("currentTime", "currentTime"), events::add);
+  @Test
+  void resolve_deduplicatesToolNames() {
+    List<ExecutionEvent> events = new ArrayList<>();
+    List<ToolCallback> callbacks =
+        registry.resolve(List.of("currentTime", "currentTime"), events::add);
 
-        assertThat(callbacks).hasSize(1);
-    }
+    assertThat(callbacks).hasSize(1);
+  }
 
-    @Test
-    void get_returnsNullForUnknownTool() {
-        List<ExecutionEvent> events = new ArrayList<>();
+  @Test
+  void get_returnsNullForUnknownTool() {
+    List<ExecutionEvent> events = new ArrayList<>();
 
-        assertThat(registry.get("unknownTool", events::add)).isNull();
-    }
+    assertThat(registry.get("unknownTool", events::add)).isNull();
+  }
 }

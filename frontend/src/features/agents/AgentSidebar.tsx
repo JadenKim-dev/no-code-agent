@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { AgentList } from "./AgentList";
-import type { AgentDefinition } from "./types";
+import { useState } from 'react';
+import { AgentList } from './AgentList';
+import type { AgentDefinition } from './types';
 
 type AgentSidebarProps = {
   agents: AgentDefinition[];
@@ -10,7 +10,7 @@ type AgentSidebarProps = {
 };
 
 export function AgentSidebar({ agents, selectedAgentId, onSelect, onNew }: AgentSidebarProps) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
 
   const filteredAgents = query.trim()
     ? agents.filter((agent) => agent.name.toLowerCase().includes(query.toLowerCase()))
@@ -58,7 +58,7 @@ export function AgentSidebar({ agents, selectedAgentId, onSelect, onNew }: Agent
       <div className="flex-1 overflow-y-auto px-2 pb-4">
         {filteredAgents.length === 0 ? (
           <p className="px-2 py-3 text-xs text-slate-600">
-            {query ? "No results found" : "No saved agents"}
+            {query ? 'No results found' : 'No saved agents'}
           </p>
         ) : (
           <AgentList

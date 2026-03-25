@@ -14,8 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReminderEntry {
 
-    @Id
-    private String id;
-    private String title;
-    private String remindAt;
+  @Id private String id;
+  private String title;
+  private String remindAt;
 }

@@ -13,22 +13,23 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableConfigurationProperties(AppProperties.class)
 public class AppConfig {
 
-    @Bean
-    ObjectMapper objectMapper() {
-        return new ObjectMapper()
-            .registerModule(new JavaTimeModule())
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    }
+  @Bean
+  ObjectMapper objectMapper() {
+    return new ObjectMapper()
+        .registerModule(new JavaTimeModule())
+        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+  }
 
-    @Bean
-    WebMvcConfigurer webMvcConfigurer(AppProperties properties) {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**")
-                    .allowedOrigins(properties.getCors().getAllowedOrigins().toArray(String[]::new))
-                    .allowedMethods("GET", "POST", "PUT", "OPTIONS");
-            }
-        };
-    }
+  @Bean
+  WebMvcConfigurer webMvcConfigurer(AppProperties properties) {
+    return new WebMvcConfigurer() {
+      @Override
+      public void addCorsMappings(CorsRegistry registry) {
+        registry
+            .addMapping("/api/**")
+            .allowedOrigins(properties.getCors().getAllowedOrigins().toArray(String[]::new))
+            .allowedMethods("GET", "POST", "PUT", "OPTIONS");
+      }
+    };
+  }
 }

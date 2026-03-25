@@ -18,23 +18,23 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequiredArgsConstructor
 public class ExecutionStreamController {
 
-    private final AgentExecutionService executionService;
+  private final AgentExecutionService executionService;
 
-    @PostMapping(path = "/{id}/runs/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter run(@PathVariable String id, @Valid @RequestBody AgentRunRequest request) {
-        SseEmitter emitter = new SseEmitter(0L);
-        executionService.run(id, request.input())
-            .doOnComplete(emitter::complete)
-            .subscribe(event -> send(emitter, event), emitter::completeWithError);
-        return emitter;
-    }
+  @PostMapping(path = "/{id}/runs/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+  public SseEmitter run(@PathVariable String id, @Valid @RequestBody AgentRunRequest request) {
+    SseEmitter emitter = new SseEmitter(0L);
+    executionService
+        .run(id, request.input())
+        .doOnComplete(emitter::complete)
+        .subscribe(event -> send(emitter, event), emitter::completeWithError);
+    return emitter;
+  }
 
-    private void send(SseEmitter emitter, ExecutionEvent event) {
-        try {
-            emitter.send(SseEmitter.event().name(event.type()).data(event));
-        }
-        catch (IOException exception) {
-            emitter.completeWithError(exception);
-        }
+  private void send(SseEmitter emitter, ExecutionEvent event) {
+    try {
+      emitter.send(SseEmitter.event().name(event.type()).data(event));
+    } catch (IOException exception) {
+      emitter.completeWithError(exception);
     }
+  }
 }

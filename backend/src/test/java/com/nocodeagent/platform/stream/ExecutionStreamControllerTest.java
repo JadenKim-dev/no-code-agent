@@ -22,40 +22,53 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 class ExecutionStreamControllerTest {
 
-    @Autowired
-    MockMvc mockMvc;
+  @Autowired MockMvc mockMvc;
 
-    @Autowired
-    AgentDefinitionService agentDefinitionService;
+  @Autowired AgentDefinitionService agentDefinitionService;
 
-    private String agentId;
+  private String agentId;
 
-    @DynamicPropertySource
-    static void storageProperties(DynamicPropertyRegistry registry) {
-        String runId = java.util.UUID.randomUUID().toString();
-        registry.add("app.storage.agents-dir", () -> java.nio.file.Path.of("target/test-stream-agents-" + runId).toAbsolutePath().toString());
-        registry.add("app.storage.schedules-file", () -> java.nio.file.Path.of("target/test-stream-schedules-" + runId, "schedules.json").toAbsolutePath().toString());
-    }
+  @DynamicPropertySource
+  static void storageProperties(DynamicPropertyRegistry registry) {
+    String runId = java.util.UUID.randomUUID().toString();
+    registry.add(
+        "app.storage.agents-dir",
+        () ->
+            java.nio.file.Path.of("target/test-stream-agents-" + runId)
+                .toAbsolutePath()
+                .toString());
+    registry.add(
+        "app.storage.schedules-file",
+        () ->
+            java.nio.file.Path.of("target/test-stream-schedules-" + runId, "schedules.json")
+                .toAbsolutePath()
+                .toString());
+  }
 
-    @BeforeEach
-    void setUp() {
-        agentId = agentDefinitionService.create(new CreateAgentRequest(
-            "Planner",
-            "",
-            "custom",
-            "help users",
-            "be helpful",
-            List.of("currentTime", "listSchedules"),
-            "what time is it?"
-        )).getId();
-    }
+  @BeforeEach
+  void setUp() {
+    agentId =
+        agentDefinitionService
+            .create(
+                new CreateAgentRequest(
+                    "Planner",
+                    "",
+                    "custom",
+                    "help users",
+                    "be helpful",
+                    List.of("currentTime", "listSchedules"),
+                    "what time is it?"))
+            .getId();
+  }
 
-    @Test
-    void streamsExecutionEvents() throws Exception {
-        mockMvc.perform(post("/api/agents/%s/runs/stream".formatted(agentId))
+  @Test
+  void streamsExecutionEvents() throws Exception {
+    mockMvc
+        .perform(
+            post("/api/agents/%s/runs/stream".formatted(agentId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"input\":\"What is on my schedule today?\"}"))
-            .andExpect(status().isOk())
-            .andExpect(header().string("Content-Type", containsString("text/event-stream")));
-    }
+        .andExpect(status().isOk())
+        .andExpect(header().string("Content-Type", containsString("text/event-stream")));
+  }
 }

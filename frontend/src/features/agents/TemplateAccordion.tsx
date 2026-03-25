@@ -1,6 +1,6 @@
-import { ChevronDown, ChevronUp, Sparkles } from "lucide-react";
-import { Badge } from "../../components/ui/badge";
-import type { AgentTemplate } from "./types";
+import { ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
+import { Badge } from '../../components/ui/badge';
+import type { AgentTemplate } from './types';
 
 type TemplateAccordionProps = {
   templates: AgentTemplate[];
@@ -9,7 +9,12 @@ type TemplateAccordionProps = {
   onOpenChange?: (open: boolean) => void;
 };
 
-export function TemplateAccordion({ templates, onSelect, open: controlledOpen, onOpenChange }: TemplateAccordionProps) {
+export function TemplateAccordion({
+  templates,
+  onSelect,
+  open: controlledOpen,
+  onOpenChange,
+}: TemplateAccordionProps) {
   const open = controlledOpen ?? false;
 
   function toggle() {

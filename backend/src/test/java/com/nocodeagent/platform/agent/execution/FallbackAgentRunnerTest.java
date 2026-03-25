@@ -21,75 +21,86 @@ import org.springframework.ai.tool.ToolCallback;
 @ExtendWith(MockitoExtension.class)
 class FallbackAgentRunnerTest {
 
-    @Mock
-    ToolRegistry toolRegistry;
+  @Mock ToolRegistry toolRegistry;
 
-    FallbackAgentRunner runner;
+  FallbackAgentRunner runner;
 
-    AgentDefinition definition;
+  AgentDefinition definition;
 
-    @BeforeEach
-    void setUp() {
-        runner = new FallbackAgentRunner(toolRegistry, new ObjectMapper());
-        definition = new AgentDefinition(
-            "id-1", "Planner", "", "custom", "help users", "be helpful",
-            List.of("currentTime", "listSchedules"), "", Instant.now(), Instant.now()
-        );
-    }
+  @BeforeEach
+  void setUp() {
+    runner = new FallbackAgentRunner(toolRegistry, new ObjectMapper());
+    definition =
+        new AgentDefinition(
+            "id-1",
+            "Planner",
+            "",
+            "custom",
+            "help users",
+            "be helpful",
+            List.of("currentTime", "listSchedules"),
+            "",
+            Instant.now(),
+            Instant.now());
+  }
 
-    @Test
-    void run_alwaysEndsWithCompletedEvent() {
-        List<ExecutionEvent> events = runner.run(definition, "hello").collectList().block();
+  @Test
+  void run_alwaysEndsWithCompletedEvent() {
+    List<ExecutionEvent> events = runner.run(definition, "hello").collectList().block();
 
-        assertThat(events).isNotNull();
-        assertThat(events).last().extracting(ExecutionEvent::type).isEqualTo("completed");
-    }
+    assertThat(events).isNotNull();
+    assertThat(events).last().extracting(ExecutionEvent::type).isEqualTo("completed");
+  }
 
-    @Test
-    void run_withTimeKeyword_includesTimeResultInOutput() {
-        ToolCallback mockCallback = mockToolCallback("2026-03-18T10:00:00");
-        when(toolRegistry.get(eq("currentTime"), any())).thenReturn(mockCallback);
+  @Test
+  void run_withTimeKeyword_includesTimeResultInOutput() {
+    ToolCallback mockCallback = mockToolCallback("2026-03-18T10:00:00");
+    when(toolRegistry.get(eq("currentTime"), any())).thenReturn(mockCallback);
 
-        List<ExecutionEvent> events = runner.run(definition, "what time is it?").collectList().block();
+    List<ExecutionEvent> events = runner.run(definition, "what time is it?").collectList().block();
 
-        assertThat(events).isNotNull();
-        boolean hasTimeContent = events.stream()
+    assertThat(events).isNotNull();
+    boolean hasTimeContent =
+        events.stream()
             .filter(e -> "message-token".equals(e.type()))
             .anyMatch(e -> e.content().contains("2026-03-18T10:00:00"));
-        assertThat(hasTimeContent).isTrue();
-    }
+    assertThat(hasTimeContent).isTrue();
+  }
 
-    @Test
-    void run_withScheduleKeyword_includesScheduleResultInOutput() {
-        ToolCallback mockCallback = mockToolCallback("No schedules found.");
-        when(toolRegistry.get(eq("listSchedules"), any())).thenReturn(mockCallback);
+  @Test
+  void run_withScheduleKeyword_includesScheduleResultInOutput() {
+    ToolCallback mockCallback = mockToolCallback("No schedules found.");
+    when(toolRegistry.get(eq("listSchedules"), any())).thenReturn(mockCallback);
 
-        List<ExecutionEvent> events = runner.run(definition, "show my schedule").collectList().block();
+    List<ExecutionEvent> events = runner.run(definition, "show my schedule").collectList().block();
 
-        assertThat(events).isNotNull();
-        boolean hasScheduleContent = events.stream()
+    assertThat(events).isNotNull();
+    boolean hasScheduleContent =
+        events.stream()
             .filter(e -> "message-token".equals(e.type()))
             .anyMatch(e -> e.content().contains("No schedules found"));
-        assertThat(hasScheduleContent).isTrue();
-    }
+    assertThat(hasScheduleContent).isTrue();
+  }
 
-    @Test
-    void run_withNoMatchingKeyword_returnsHelpMessageInstead() {
-        List<ExecutionEvent> events = runner.run(definition, "something unrelated").collectList().block();
+  @Test
+  void run_withNoMatchingKeyword_returnsHelpMessageInstead() {
+    List<ExecutionEvent> events =
+        runner.run(definition, "something unrelated").collectList().block();
 
-        assertThat(events).isNotNull();
-        boolean hasToolCallStart = events.stream().anyMatch(e -> "tool-call-start".equals(e.type()));
-        assertThat(hasToolCallStart).isFalse();
+    assertThat(events).isNotNull();
+    boolean hasToolCallStart = events.stream().anyMatch(e -> "tool-call-start".equals(e.type()));
+    assertThat(hasToolCallStart).isFalse();
 
-        boolean hasHelpMessage = events.stream()
+    boolean hasHelpMessage =
+        events.stream()
             .filter(e -> "message-token".equals(e.type()))
             .anyMatch(e -> e.content().contains("No deterministic"));
-        assertThat(hasHelpMessage).isTrue();
-    }
+    assertThat(hasHelpMessage).isTrue();
+  }
 
-    private ToolCallback mockToolCallback(String result) {
-        ToolCallback callback = org.mockito.Mockito.mock(ToolCallback.class);
-        when(callback.call(any())).thenReturn(result);
-        return callback;
-    }
+  private ToolCallback mockToolCallback(String result) {
+    ToolCallback callback = org.mockito.Mockito.mock(ToolCallback.class);
+    when(callback.call(any())).thenReturn(result);
+    return callback;
+  }
 }

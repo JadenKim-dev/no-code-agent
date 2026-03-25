@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AgentDefinitionRepository extends JpaRepository<AgentDefinition, String> {
 
-    List<AgentDefinition> findAllByOrderByUpdatedAtDesc();
+  List<AgentDefinition> findAllByOrderByUpdatedAtDesc();
 }

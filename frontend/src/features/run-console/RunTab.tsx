@@ -1,9 +1,9 @@
-import { PlayCircle } from "lucide-react";
-import { Button } from "../../components/ui/button";
-import { Textarea } from "../../components/ui/textarea";
-import { RunConsole } from "./RunConsole";
-import type { RunEvent } from "./types";
-import type { AgentDefinition } from "../agents/types";
+import { PlayCircle } from 'lucide-react';
+import { Button } from '../../components/ui/button';
+import { Textarea } from '../../components/ui/textarea';
+import { RunConsole } from './RunConsole';
+import type { RunEvent } from './types';
+import type { AgentDefinition } from '../agents/types';
 
 type RunTabProps = {
   selectedAgent: AgentDefinition | null;
@@ -14,15 +14,20 @@ type RunTabProps = {
   onRun: () => void;
 };
 
-export function RunTab({ selectedAgent, runInput, onRunInputChange, events, isPending, onRun }: RunTabProps) {
+export function RunTab({
+  selectedAgent,
+  runInput,
+  onRunInputChange,
+  events,
+  isPending,
+  onRun,
+}: RunTabProps) {
   return (
     <div className="flex flex-col gap-4 p-6 h-full">
       {/* Input section */}
       <div className="shrink-0 rounded-xl border border-slate-200 bg-white p-4">
         {!selectedAgent ? (
-          <p className="mb-3 text-xs text-slate-400">
-            Select or save an agent to run it
-          </p>
+          <p className="mb-3 text-xs text-slate-400">Select or save an agent to run it</p>
         ) : null}
         <label className="grid gap-2 text-sm font-medium text-slate-700">
           Run Input
@@ -34,12 +39,7 @@ export function RunTab({ selectedAgent, runInput, onRunInputChange, events, isPe
           />
         </label>
         <div className="mt-3 flex justify-end">
-          <Button
-            type="button"
-            size="lg"
-            onClick={onRun}
-            disabled={!selectedAgent || isPending}
-          >
+          <Button type="button" size="lg" onClick={onRun} disabled={!selectedAgent || isPending}>
             <PlayCircle className="h-4 w-4" />
             Stream Run
           </Button>

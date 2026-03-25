@@ -1,5 +1,6 @@
 package com.nocodeagent.platform.agent.definition;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -17,23 +18,21 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest(properties = {
-    "spring.ai.openai.api-key=demo-key",
-    "spring.datasource.url=jdbc:sqlite::memory:"
-})
+@SpringBootTest(
+    properties = {
+      "spring.ai.openai.api-key=demo-key",
+      "spring.datasource.url=jdbc:sqlite::memory:"
+    })
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class AgentDefinitionControllerTest {
 
-    @Autowired
-    MockMvc mockMvc;
+  @Autowired MockMvc mockMvc;
 
-    @Autowired
-    ObjectMapper objectMapper;
+  @Autowired ObjectMapper objectMapper;
 
-    private static final String VALID_AGENT_JSON = """
+  private static final String VALID_AGENT_JSON =
+      """
         {
           "name": "Planner",
           "description": "test",
@@ -45,65 +44,77 @@ class AgentDefinitionControllerTest {
         }
         """;
 
-    @Test
-    void createsAgentAndReturns201WithBody() throws Exception {
-        mockMvc.perform(post("/api/agents")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(VALID_AGENT_JSON))
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.name").value("Planner"))
-            .andExpect(jsonPath("$.id").isNotEmpty())
-            .andExpect(jsonPath("$.enabledTools[0]").value("currentTime"));
-    }
+  @Test
+  void createsAgentAndReturns201WithBody() throws Exception {
+    mockMvc
+        .perform(
+            post("/api/agents").contentType(MediaType.APPLICATION_JSON).content(VALID_AGENT_JSON))
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.name").value("Planner"))
+        .andExpect(jsonPath("$.id").isNotEmpty())
+        .andExpect(jsonPath("$.enabledTools[0]").value("currentTime"));
+  }
 
-    @Test
-    void listAgents_returnsCreatedAgents() throws Exception {
-        mockMvc.perform(post("/api/agents")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(VALID_AGENT_JSON))
-            .andExpect(status().isCreated());
+  @Test
+  void listAgents_returnsCreatedAgents() throws Exception {
+    mockMvc
+        .perform(
+            post("/api/agents").contentType(MediaType.APPLICATION_JSON).content(VALID_AGENT_JSON))
+        .andExpect(status().isCreated());
 
-        mockMvc.perform(get("/api/agents"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(1)));
-    }
+    mockMvc
+        .perform(get("/api/agents"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$", hasSize(1)));
+  }
 
-    @Test
-    void getAgentById_returnsAgent() throws Exception {
-        MvcResult createResult = mockMvc.perform(post("/api/agents")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(VALID_AGENT_JSON))
-            .andExpect(status().isCreated())
-            .andReturn();
-
-        String id = objectMapper.readTree(createResult.getResponse().getContentAsString()).get("id").asText();
-        assertThat(id).isNotBlank();
-
-        mockMvc.perform(get("/api/agents/{id}", id))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value(id))
-            .andExpect(jsonPath("$.name").value("Planner"));
-    }
-
-    @Test
-    void getAgentById_returnsNotFoundForUnknownId() throws Exception {
-        mockMvc.perform(get("/api/agents/unknown-id"))
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void updateAgent_returnsUpdatedAgent() throws Exception {
-        MvcResult createResult = mockMvc.perform(post("/api/agents")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(VALID_AGENT_JSON))
+  @Test
+  void getAgentById_returnsAgent() throws Exception {
+    MvcResult createResult =
+        mockMvc
+            .perform(
+                post("/api/agents")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(VALID_AGENT_JSON))
             .andExpect(status().isCreated())
             .andReturn();
 
-        String id = objectMapper.readTree(createResult.getResponse().getContentAsString()).get("id").asText();
+    String id =
+        objectMapper.readTree(createResult.getResponse().getContentAsString()).get("id").asText();
+    assertThat(id).isNotBlank();
 
-        mockMvc.perform(put("/api/agents/{id}", id)
+    mockMvc
+        .perform(get("/api/agents/{id}", id))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(id))
+        .andExpect(jsonPath("$.name").value("Planner"));
+  }
+
+  @Test
+  void getAgentById_returnsNotFoundForUnknownId() throws Exception {
+    mockMvc.perform(get("/api/agents/unknown-id")).andExpect(status().isNotFound());
+  }
+
+  @Test
+  void updateAgent_returnsUpdatedAgent() throws Exception {
+    MvcResult createResult =
+        mockMvc
+            .perform(
+                post("/api/agents")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(VALID_AGENT_JSON))
+            .andExpect(status().isCreated())
+            .andReturn();
+
+    String id =
+        objectMapper.readTree(createResult.getResponse().getContentAsString()).get("id").asText();
+
+    mockMvc
+        .perform(
+            put("/api/agents/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("""
+                .content(
+                    """
                     {
                       "name": "Updated Planner",
                       "description": "",
@@ -114,16 +125,19 @@ class AgentDefinitionControllerTest {
                       "defaultInput": ""
                     }
                     """))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name").value("Updated Planner"))
-            .andExpect(jsonPath("$.goal").value("help teams"));
-    }
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.name").value("Updated Planner"))
+        .andExpect(jsonPath("$.goal").value("help teams"));
+  }
 
-    @Test
-    void createAgent_returnsBadRequestWhenNameIsBlank() throws Exception {
-        mockMvc.perform(post("/api/agents")
+  @Test
+  void createAgent_returnsBadRequestWhenNameIsBlank() throws Exception {
+    mockMvc
+        .perform(
+            post("/api/agents")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("""
+                .content(
+                    """
                     {
                       "name": "",
                       "description": "test",
@@ -134,14 +148,17 @@ class AgentDefinitionControllerTest {
                       "defaultInput": ""
                     }
                     """))
-            .andExpect(status().isBadRequest());
-    }
+        .andExpect(status().isBadRequest());
+  }
 
-    @Test
-    void createAgent_returnsBadRequestWhenNoToolsProvided() throws Exception {
-        mockMvc.perform(post("/api/agents")
+  @Test
+  void createAgent_returnsBadRequestWhenNoToolsProvided() throws Exception {
+    mockMvc
+        .perform(
+            post("/api/agents")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("""
+                .content(
+                    """
                     {
                       "name": "Planner",
                       "description": "test",
@@ -152,6 +169,6 @@ class AgentDefinitionControllerTest {
                       "defaultInput": ""
                     }
                     """))
-            .andExpect(status().isBadRequest());
-    }
+        .andExpect(status().isBadRequest());
+  }
 }

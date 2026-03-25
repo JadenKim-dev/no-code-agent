@@ -18,17 +18,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class AgentDefinition {
-    @Id
-    private String id;
-    private String name;
-    private String description;
-    private String type;
-    private String goal;
-    @Column(columnDefinition = "TEXT")
-    private String systemPrompt;
-    @Convert(converter = StringListConverter.class)
-    private List<String> enabledTools;
-    private String defaultInput;
-    private Instant createdAt;
-    private Instant updatedAt;
+  @Id private String id;
+  private String name;
+  private String description;
+  private String type;
+  private String goal;
+
+  @Column(columnDefinition = "TEXT")
+  private String systemPrompt;
+
+  @Convert(converter = StringListConverter.class)
+  private List<String> enabledTools;
+
+  private String defaultInput;
+  private Instant createdAt;
+  private Instant updatedAt;
 }

@@ -6,22 +6,23 @@ import org.junit.jupiter.api.Test;
 
 class AgentTemplateProviderTest {
 
-    private final AgentTemplateProvider provider = new AgentTemplateProvider();
+  private final AgentTemplateProvider provider = new AgentTemplateProvider();
 
-    @Test
-    void listTemplates_returnsExactlyOneTemplate() {
-        assertThat(provider.listTemplates()).hasSize(1);
-    }
+  @Test
+  void listTemplates_returnsExactlyOneTemplate() {
+    assertThat(provider.listTemplates()).hasSize(1);
+  }
 
-    @Test
-    void schedulerTemplate_hasExpectedEnabledTools() {
-        AgentTemplate template = provider.listTemplates().stream()
+  @Test
+  void schedulerTemplate_hasExpectedEnabledTools() {
+    AgentTemplate template =
+        provider.listTemplates().stream()
             .filter(t -> "scheduler-template".equals(t.key()))
             .findFirst()
             .orElseThrow(() -> new AssertionError("scheduler-template not found"));
 
-        assertThat(template.enabledTools()).containsExactlyInAnyOrder(
-            "currentTime", "createSchedule", "createReminder", "listSchedules"
-        );
-    }
+    assertThat(template.enabledTools())
+        .containsExactlyInAnyOrder(
+            "currentTime", "createSchedule", "createReminder", "listSchedules");
+  }
 }

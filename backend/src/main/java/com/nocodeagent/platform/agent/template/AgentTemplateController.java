@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AgentTemplateController {
 
-    private final AgentTemplateProvider provider;
+  private final AgentTemplateProvider provider;
 
-    @GetMapping
-    public List<AgentTemplate> list() {
-        return provider.listTemplates();
-    }
+  @GetMapping
+  public List<AgentTemplate> list() {
+    return provider.listTemplates();
+  }
 }

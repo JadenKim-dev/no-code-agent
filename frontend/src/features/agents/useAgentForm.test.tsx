@@ -72,10 +72,9 @@ it('markAllTouched marks all required fields as touched', () => {
 });
 
 it('resets values and touched state when initialValues changes', () => {
-  const { result, rerender } = renderHook(
-    ({ initial }) => useAgentForm(initial),
-    { initialProps: { initial: defaultValues } },
-  );
+  const { result, rerender } = renderHook(({ initial }) => useAgentForm(initial), {
+    initialProps: { initial: defaultValues },
+  });
 
   act(() => {
     result.current.markTouched('name');
@@ -98,10 +97,9 @@ it('setValues updates values independently', () => {
 });
 
 it('does not reset when initialValues reference changes but content is identical', () => {
-  const { result, rerender } = renderHook(
-    ({ initial }) => useAgentForm(initial),
-    { initialProps: { initial: defaultValues } },
-  );
+  const { result, rerender } = renderHook(({ initial }) => useAgentForm(initial), {
+    initialProps: { initial: defaultValues },
+  });
 
   act(() => {
     result.current.markTouched('name');
