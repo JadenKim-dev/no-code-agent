@@ -78,9 +78,14 @@ export function useAgentWorkspace() {
   }
 
   async function handleSave(values: AgentFormValues) {
-    const saved = selectedAgent
-      ? await updateAgent(selectedAgent.id, values)
-      : await createAgent(values);
+    let saved: AgentDefinition;
+    try {
+      saved = selectedAgent
+        ? await updateAgent(selectedAgent.id, values)
+        : await createAgent(values);
+    } catch {
+      return;
+    }
 
     startTransition(() => {
       setSelectedAgent(saved);

@@ -21,6 +21,9 @@ export async function createAgent(values: AgentFormValues): Promise<AgentDefinit
     headers: JSON_HEADERS,
     body: JSON.stringify(values)
   });
+  if (!response.ok) {
+    throw new Error(`Failed to create agent: ${response.status}`);
+  }
   return response.json();
 }
 
@@ -30,6 +33,9 @@ export async function updateAgent(id: string, values: AgentFormValues): Promise<
     headers: JSON_HEADERS,
     body: JSON.stringify(values)
   });
+  if (!response.ok) {
+    throw new Error(`Failed to update agent: ${response.status}`);
+  }
   return response.json();
 }
 

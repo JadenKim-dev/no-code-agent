@@ -43,15 +43,15 @@ it("renders all agent names", () => {
 
 it("filters agents by search query", async () => {
   render(<AgentSidebar agents={agents} selectedAgentId={null} onSelect={vi.fn()} onNew={vi.fn()} />);
-  await userEvent.type(screen.getByPlaceholderText(/에이전트 검색/i), "Sched");
+  await userEvent.type(screen.getByPlaceholderText(/Search agents/i), "Sched");
   expect(screen.getByText("Scheduler")).toBeInTheDocument();
   expect(screen.queryByText("Reminder Bot")).not.toBeInTheDocument();
 });
 
 it("shows empty message when no agents match search", async () => {
   render(<AgentSidebar agents={agents} selectedAgentId={null} onSelect={vi.fn()} onNew={vi.fn()} />);
-  await userEvent.type(screen.getByPlaceholderText(/에이전트 검색/i), "zzz");
-  expect(screen.getByText("검색 결과 없음")).toBeInTheDocument();
+  await userEvent.type(screen.getByPlaceholderText(/Search agents/i), "zzz");
+  expect(screen.getByText("No results found")).toBeInTheDocument();
 });
 
 it("calls onNew when + New button is clicked", async () => {

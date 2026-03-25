@@ -48,7 +48,7 @@ it("calls onOpenChange(true) when header is clicked while closed", async () => {
       onOpenChange={onOpenChange}
     />
   );
-  await userEvent.click(screen.getByRole("button", { name: /템플릿으로 시작하기/i }));
+  await userEvent.click(screen.getByRole("button", { name: /Start from a template/i }));
   expect(onOpenChange).toHaveBeenCalledWith(true);
 });
 

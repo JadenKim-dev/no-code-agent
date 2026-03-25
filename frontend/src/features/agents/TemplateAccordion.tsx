@@ -25,14 +25,14 @@ export function TemplateAccordion({ templates, onSelect, open: controlledOpen, o
     <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
       <button
         type="button"
-        aria-label="템플릿으로 시작하기"
+        aria-label="Start from a template"
         className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 transition"
         onClick={toggle}
       >
         <div className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-sky-500" />
-          <span className="text-sm font-semibold text-slate-900">템플릿으로 시작하기</span>
-          <span className="text-xs text-slate-400">— {templates.length}개</span>
+          <span className="text-sm font-semibold text-slate-900">Start from a template</span>
+          <span className="text-xs text-slate-400">— {templates.length}</span>
         </div>
         {open ? (
           <ChevronUp className="h-4 w-4 text-slate-400" />

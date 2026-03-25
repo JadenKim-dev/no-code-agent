@@ -19,7 +19,7 @@ export function AgentSidebar({ agents, selectedAgentId, onSelect, onNew }: Agent
   return (
     <aside
       data-testid="agent-sidebar"
-      className="w-[240px] flex-shrink-0 bg-slate-950 flex flex-col h-screen sticky top-0"
+      className="w-[240px] flex-shrink-0 bg-slate-950 flex flex-col h-screen sticky top-0 overflow-x-hidden"
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 pt-5 pb-3">
@@ -40,7 +40,7 @@ export function AgentSidebar({ agents, selectedAgentId, onSelect, onNew }: Agent
       <div className="px-3 pb-3">
         <input
           type="text"
-          placeholder="에이전트 검색..."
+          placeholder="Search agents..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-1.5 text-xs text-slate-300 placeholder:text-slate-500 focus:outline-none focus:border-slate-600"
@@ -58,7 +58,7 @@ export function AgentSidebar({ agents, selectedAgentId, onSelect, onNew }: Agent
       <div className="flex-1 overflow-y-auto px-2 pb-4">
         {filteredAgents.length === 0 ? (
           <p className="px-2 py-3 text-xs text-slate-600">
-            {query ? "검색 결과 없음" : "저장된 에이전트 없음"}
+            {query ? "No results found" : "No saved agents"}
           </p>
         ) : (
           <AgentList

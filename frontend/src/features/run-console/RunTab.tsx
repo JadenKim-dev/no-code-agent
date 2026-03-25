@@ -18,10 +18,10 @@ export function RunTab({ selectedAgent, runInput, onRunInputChange, events, isPe
   return (
     <div className="flex flex-col gap-4 p-6 h-full">
       {/* Input section */}
-      <div className="flex-shrink-0 rounded-xl border border-slate-200 bg-white p-4">
+      <div className="shrink-0 rounded-xl border border-slate-200 bg-white p-4">
         {!selectedAgent ? (
           <p className="mb-3 text-xs text-slate-400">
-            에이전트를 선택하거나 저장하면 실행할 수 있습니다
+            Select or save an agent to run it
           </p>
         ) : null}
         <label className="grid gap-2 text-sm font-medium text-slate-700">

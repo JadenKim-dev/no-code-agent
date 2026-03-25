@@ -20,19 +20,37 @@ type AgentFormProps = {
   onSubmit: (values: AgentFormValues) => void | Promise<void>;
 };
 
+const REQUIRED_FIELDS = ["name", "goal", "systemPrompt"] as const;
+type RequiredField = typeof REQUIRED_FIELDS[number];
+
+function fieldError(values: AgentFormValues, touched: Set<RequiredField>, field: RequiredField): boolean {
+  return touched.has(field) && !values[field].trim();
+}
+
 export function AgentForm({ initialValues, onSubmit }: AgentFormProps) {
   const [values, setValues] = useState(initialValues);
+  const [touched, setTouched] = useState<Set<RequiredField>>(new Set());
 
   useEffect(() => {
     setValues(initialValues);
+    setTouched(new Set());
   }, [initialValues]);
+
+  const isValid = REQUIRED_FIELDS.every((f) => values[f].trim());
+
+  function touch(field: RequiredField) {
+    setTouched((prev) => new Set(prev).add(field));
+  }
 
   return (
     <form
       className="grid gap-5"
       onSubmit={(event) => {
         event.preventDefault();
-        if (!values.name.trim()) return;
+        if (!isValid) {
+          setTouched(new Set(REQUIRED_FIELDS));
+          return;
+        }
         void onSubmit(values);
       }}
     >
@@ -44,7 +62,7 @@ export function AgentForm({ initialValues, onSubmit }: AgentFormProps) {
               <CardTitle className="mt-3">Builder Workspace</CardTitle>
               <CardDescription>Define the runtime contract, behavior, and tool boundary for the selected agent.</CardDescription>
             </div>
-            <Button className="self-start" type="submit">
+            <Button className="self-start" type="submit" disabled={!isValid}>
               Save Agent
             </Button>
           </div>
@@ -52,13 +70,18 @@ export function AgentForm({ initialValues, onSubmit }: AgentFormProps) {
         <CardContent className="grid gap-5">
           <section className="grid gap-4 md:grid-cols-2">
             <label className="grid gap-2 text-sm font-medium text-slate-700">
-              Name
+              <span>Name <span className="text-red-500">*</span></span>
               <Input
                 aria-label="Name"
                 placeholder="Customer Ops Assistant"
                 value={values.name}
                 onChange={(event) => setValues({ ...values, name: event.target.value })}
+                onBlur={() => touch("name")}
+                className={fieldError(values, touched, "name") ? "border-red-400 focus-visible:ring-red-400/40" : ""}
               />
+              {fieldError(values, touched, "name") && (
+                <span className="text-xs text-red-500">This field is required.</span>
+              )}
             </label>
             <label className="grid gap-2 text-sm font-medium text-slate-700">
               Default Input
@@ -88,13 +111,17 @@ export function AgentForm({ initialValues, onSubmit }: AgentFormProps) {
               />
             </label>
             <label className="grid gap-2 text-sm font-medium text-slate-700">
-              Goal
+              <span>Goal <span className="text-red-500">*</span></span>
               <Textarea
                 aria-label="Goal"
-                className="min-h-[120px]"
+                className={cn("min-h-[120px]", fieldError(values, touched, "goal") && "border-red-400 focus-visible:ring-red-400/40")}
                 value={values.goal}
                 onChange={(event) => setValues({ ...values, goal: event.target.value })}
+                onBlur={() => touch("goal")}
               />
+              {fieldError(values, touched, "goal") && (
+                <span className="text-xs text-red-500">This field is required.</span>
+              )}
             </label>
           </section>
 
@@ -106,13 +133,17 @@ export function AgentForm({ initialValues, onSubmit }: AgentFormProps) {
               <p className="text-sm text-slate-500">This instruction set frames how the agent reasons and when it should use tools.</p>
             </div>
             <label className="grid gap-2 text-sm font-medium text-slate-700">
-              System Prompt
+              <span>System Prompt <span className="text-red-500">*</span></span>
               <Textarea
                 aria-label="System Prompt"
-                className="min-h-[200px]"
+                className={cn("min-h-[200px]", fieldError(values, touched, "systemPrompt") && "border-red-400 focus-visible:ring-red-400/40")}
                 value={values.systemPrompt}
                 onChange={(event) => setValues({ ...values, systemPrompt: event.target.value })}
+                onBlur={() => touch("systemPrompt")}
               />
+              {fieldError(values, touched, "systemPrompt") && (
+                <span className="text-xs text-red-500">This field is required.</span>
+              )}
             </label>
           </section>
 

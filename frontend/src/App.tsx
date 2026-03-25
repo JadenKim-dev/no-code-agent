@@ -67,9 +67,9 @@ export default function App() {
           </button>
           <div className="ml-auto text-xs text-slate-400">
             {selectedAgent ? (
-              <span>편집 중: <strong className="text-slate-700">{selectedAgent.name}</strong></span>
+              <span>Editing: <strong className="text-slate-700">{selectedAgent.name}</strong></span>
             ) : (
-              <span>새 에이전트 작성 중</span>
+              <span>New agent</span>
             )}
           </div>
         </div>
