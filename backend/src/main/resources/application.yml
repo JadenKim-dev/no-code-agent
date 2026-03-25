@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: no-code-agent-backend
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:demo-key}
+      chat:
+        options:
+          model: ${OPENAI_MODEL:gpt-4o-mini}
+  datasource:
+    url: jdbc:sqlite:${app.storage.data-dir:./data}/agents.db
+    driver-class-name: org.sqlite.JDBC
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+app:
+  storage:
+    data-dir: ./data
+  cors:
+    allowed-origins: http://localhost:5173

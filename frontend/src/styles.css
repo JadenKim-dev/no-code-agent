@@ -1,0 +1,29 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'IBM Plex Sans', 'Helvetica Neue', sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SFMono-Regular', monospace;
+}
+
+@layer base {
+  :root {
+    color: #0f172a;
+    background:
+      radial-gradient(circle at top left, rgba(125, 211, 252, 0.18), transparent 30%),
+      linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+  }
+
+  * {
+    @apply box-border;
+  }
+
+  body {
+    @apply m-0 min-h-screen bg-transparent font-sans text-slate-900 antialiased;
+  }
+
+  button,
+  input,
+  textarea {
+    font: inherit;
+  }
+}

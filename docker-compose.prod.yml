@@ -1,0 +1,22 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-demo-key}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+    volumes:
+      - backend-data:/app/data
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  backend-data:
