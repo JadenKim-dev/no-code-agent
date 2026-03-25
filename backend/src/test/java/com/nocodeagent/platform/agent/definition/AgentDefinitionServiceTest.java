@@ -115,11 +115,46 @@ class AgentDefinitionServiceTest {
         when(repository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         AgentDefinition result = service.update("id-1", new UpdateAgentRequest(
-            "New Name", "", "new goal", "new prompt", List.of("listSchedules"), ""
+            "New Name", "", "custom", "new goal", "new prompt", List.of("listSchedules"), ""
         ));
 
         assertThat(result.getName()).isEqualTo("New Name");
         assertThat(result.getGoal()).isEqualTo("new goal");
         assertThat(result.getEnabledTools()).containsExactly("listSchedules");
+    }
+
+    @Test
+    void update_preservesTypeWhenRequestTypeIsNull() {
+        AgentDefinition existing = new AgentDefinition(
+            "id-1", "Name", "", "custom", "goal", "prompt",
+            List.of("currentTime"), "", Instant.now(), Instant.now()
+        );
+        when(repository.findById("id-1")).thenReturn(Optional.of(existing));
+        when(repository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        AgentDefinition result = service.update("id-1", new UpdateAgentRequest(
+            "Name", "", null, "goal", "prompt", List.of("currentTime"), ""
+        ));
+
+        assertThat(result.getType()).isEqualTo("custom");
+    }
+
+    @Test
+    void update_preservesCreatedAtAndUpdatesUpdatedAt() {
+        Instant createdAt = Instant.parse("2026-01-01T00:00:00Z");
+        AgentDefinition existing = new AgentDefinition(
+            "id-1", "Name", "", "custom", "goal", "prompt",
+            List.of("currentTime"), "", createdAt, createdAt
+        );
+        when(repository.findById("id-1")).thenReturn(Optional.of(existing));
+        when(repository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Instant beforeUpdate = Instant.now();
+        AgentDefinition result = service.update("id-1", new UpdateAgentRequest(
+            "Name", "", "custom", "goal", "prompt", List.of("currentTime"), ""
+        ));
+
+        assertThat(result.getCreatedAt()).isEqualTo(createdAt);
+        assertThat(result.getUpdatedAt()).isAfterOrEqualTo(beforeUpdate);
     }
 }

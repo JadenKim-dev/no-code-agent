@@ -16,13 +16,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.springframework.ai.tool.ToolCallback;
-import org.springframework.ai.tool.definition.ToolDefinition;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class FallbackAgentRunnerTest {
 
     @Mock
@@ -51,7 +47,7 @@ class FallbackAgentRunnerTest {
 
     @Test
     void run_withTimeKeyword_includesTimeResultInOutput() {
-        ToolCallback mockCallback = mockToolCallback("currentTime", "2026-03-18T10:00:00");
+        ToolCallback mockCallback = mockToolCallback("2026-03-18T10:00:00");
         when(toolRegistry.get(eq("currentTime"), any())).thenReturn(mockCallback);
 
         List<ExecutionEvent> events = runner.run(definition, "what time is it?").collectList().block();
@@ -65,7 +61,7 @@ class FallbackAgentRunnerTest {
 
     @Test
     void run_withScheduleKeyword_includesScheduleResultInOutput() {
-        ToolCallback mockCallback = mockToolCallback("listSchedules", "No schedules found.");
+        ToolCallback mockCallback = mockToolCallback("No schedules found.");
         when(toolRegistry.get(eq("listSchedules"), any())).thenReturn(mockCallback);
 
         List<ExecutionEvent> events = runner.run(definition, "show my schedule").collectList().block();
@@ -87,15 +83,12 @@ class FallbackAgentRunnerTest {
 
         boolean hasHelpMessage = events.stream()
             .filter(e -> "message-token".equals(e.type()))
-            .anyMatch(e -> e.content().contains("OPENAI_API_KEY") || e.content().contains("No deterministic"));
+            .anyMatch(e -> e.content().contains("No deterministic"));
         assertThat(hasHelpMessage).isTrue();
     }
 
-    private ToolCallback mockToolCallback(String name, String result) {
+    private ToolCallback mockToolCallback(String result) {
         ToolCallback callback = org.mockito.Mockito.mock(ToolCallback.class);
-        ToolDefinition def = org.mockito.Mockito.mock(ToolDefinition.class);
-        when(callback.getToolDefinition()).thenReturn(def);
-        when(def.name()).thenReturn(name);
         when(callback.call(any())).thenReturn(result);
         return callback;
     }

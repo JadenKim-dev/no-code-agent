@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.ai.chat.model.ToolContext;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.definition.ToolDefinition;
 
@@ -64,11 +65,33 @@ class ObservedToolCallbackTest {
     }
 
     @Test
-    void call_returnsDelegate結果() {
+    void call_returnsDelegateResult() {
         when(delegate.call("{}")).thenReturn("2026-03-18T10:00:00");
 
         String result = callback.call("{}");
 
         assertThat(result).isEqualTo("2026-03-18T10:00:00");
+    }
+
+    @Test
+    void callWithContext_emitsToolCallStartAndResultEvents() {
+        ToolContext context = new ToolContext(java.util.Map.of());
+        when(delegate.call("{}", context)).thenReturn("2026-03-18T10:00:00");
+
+        callback.call("{}", context);
+
+        assertThat(emittedEvents).anyMatch(event -> "tool-call-start".equals(event.type()));
+        assertThat(emittedEvents).anyMatch(event -> "tool-call-result".equals(event.type()));
+    }
+
+    @Test
+    void callWithContext_onFailure_emitsErrorEvent() {
+        ToolContext context = new ToolContext(java.util.Map.of());
+        when(delegate.call("{}", context)).thenThrow(new RuntimeException("tool error"));
+
+        assertThatThrownBy(() -> callback.call("{}", context))
+            .isInstanceOf(RuntimeException.class);
+
+        assertThat(emittedEvents).anyMatch(event -> "error".equals(event.type()));
     }
 }
