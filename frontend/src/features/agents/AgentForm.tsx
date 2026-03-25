@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
@@ -7,6 +6,7 @@ import { Separator } from "../../components/ui/separator";
 import { Textarea } from "../../components/ui/textarea";
 import { cn } from "../../lib/utils";
 import type { AgentFormValues } from "./types";
+import { useAgentForm } from "./useAgentForm";
 
 const TOOL_OPTIONS = [
   { id: "currentTime", description: "Expose current date and time for time-sensitive prompts." },
@@ -20,27 +20,8 @@ type AgentFormProps = {
   onSubmit: (values: AgentFormValues) => void | Promise<void>;
 };
 
-const REQUIRED_FIELDS = ["name", "goal", "systemPrompt"] as const;
-type RequiredField = typeof REQUIRED_FIELDS[number];
-
-function fieldError(values: AgentFormValues, touched: Set<RequiredField>, field: RequiredField): boolean {
-  return touched.has(field) && !values[field].trim();
-}
-
 export function AgentForm({ initialValues, onSubmit }: AgentFormProps) {
-  const [values, setValues] = useState(initialValues);
-  const [touched, setTouched] = useState<Set<RequiredField>>(new Set());
-
-  useEffect(() => {
-    setValues(initialValues);
-    setTouched(new Set());
-  }, [initialValues]);
-
-  const isValid = REQUIRED_FIELDS.every((f) => values[f].trim());
-
-  function touch(field: RequiredField) {
-    setTouched((prev) => new Set(prev).add(field));
-  }
+  const { values, setValues, isValid, markTouched, markAllTouched, hasFieldError } = useAgentForm(initialValues);
 
   return (
     <form
@@ -48,7 +29,7 @@ export function AgentForm({ initialValues, onSubmit }: AgentFormProps) {
       onSubmit={(event) => {
         event.preventDefault();
         if (!isValid) {
-          setTouched(new Set(REQUIRED_FIELDS));
+          markAllTouched();
           return;
         }
         void onSubmit(values);
@@ -76,10 +57,10 @@ export function AgentForm({ initialValues, onSubmit }: AgentFormProps) {
                 placeholder="Customer Ops Assistant"
                 value={values.name}
                 onChange={(event) => setValues({ ...values, name: event.target.value })}
-                onBlur={() => touch("name")}
-                className={fieldError(values, touched, "name") ? "border-red-400 focus-visible:ring-red-400/40" : ""}
+                onBlur={() => markTouched("name")}
+                className={hasFieldError("name") ? "border-red-400 focus-visible:ring-red-400/40" : ""}
               />
-              {fieldError(values, touched, "name") && (
+              {hasFieldError("name") && (
                 <span className="text-xs text-red-500">This field is required.</span>
               )}
             </label>
@@ -114,12 +95,12 @@ export function AgentForm({ initialValues, onSubmit }: AgentFormProps) {
               <span>Goal <span className="text-red-500">*</span></span>
               <Textarea
                 aria-label="Goal"
-                className={cn("min-h-[120px]", fieldError(values, touched, "goal") && "border-red-400 focus-visible:ring-red-400/40")}
+                className={cn("min-h-[120px]", hasFieldError("goal") && "border-red-400 focus-visible:ring-red-400/40")}
                 value={values.goal}
                 onChange={(event) => setValues({ ...values, goal: event.target.value })}
-                onBlur={() => touch("goal")}
+                onBlur={() => markTouched("goal")}
               />
-              {fieldError(values, touched, "goal") && (
+              {hasFieldError("goal") && (
                 <span className="text-xs text-red-500">This field is required.</span>
               )}
             </label>
@@ -136,12 +117,12 @@ export function AgentForm({ initialValues, onSubmit }: AgentFormProps) {
               <span>System Prompt <span className="text-red-500">*</span></span>
               <Textarea
                 aria-label="System Prompt"
-                className={cn("min-h-[200px]", fieldError(values, touched, "systemPrompt") && "border-red-400 focus-visible:ring-red-400/40")}
+                className={cn("min-h-[200px]", hasFieldError("systemPrompt") && "border-red-400 focus-visible:ring-red-400/40")}
                 value={values.systemPrompt}
                 onChange={(event) => setValues({ ...values, systemPrompt: event.target.value })}
-                onBlur={() => touch("systemPrompt")}
+                onBlur={() => markTouched("systemPrompt")}
               />
-              {fieldError(values, touched, "systemPrompt") && (
+              {hasFieldError("systemPrompt") && (
                 <span className="text-xs text-red-500">This field is required.</span>
               )}
             </label>

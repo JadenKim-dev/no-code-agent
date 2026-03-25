@@ -7,11 +7,11 @@ it("submits agent definition fields", async () => {
   render(
     <AgentForm
       initialValues={{
-        name: "",
+        name: "Planner",
         description: "",
         type: "custom",
-        goal: "",
-        systemPrompt: "",
+        goal: "Plan things",
+        systemPrompt: "You are a planner.",
         enabledTools: ["currentTime"],
         defaultInput: ""
       }}
@@ -19,7 +19,6 @@ it("submits agent definition fields", async () => {
     />
   );
 
-  await userEvent.type(screen.getByLabelText(/name/i), "Planner");
   await userEvent.click(screen.getByRole("button", { name: /save agent/i }));
 
   expect(onSubmit).toHaveBeenCalled();

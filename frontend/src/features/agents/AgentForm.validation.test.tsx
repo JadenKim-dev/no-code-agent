@@ -21,11 +21,15 @@ it("does not call onSubmit when name is empty", async () => {
   expect(onSubmit).not.toHaveBeenCalled();
 });
 
-it("calls onSubmit when name is filled in", async () => {
+it("calls onSubmit when all required fields are filled", async () => {
   const onSubmit = vi.fn();
-  render(<AgentForm initialValues={defaultValues} onSubmit={onSubmit} />);
+  render(
+    <AgentForm
+      initialValues={{ ...defaultValues, name: "My Agent", goal: "Do things", systemPrompt: "You are..." }}
+      onSubmit={onSubmit}
+    />
+  );
 
-  await userEvent.type(screen.getByLabelText(/name/i), "My Agent");
   await userEvent.click(screen.getByRole("button", { name: /save agent/i }));
 
   expect(onSubmit).toHaveBeenCalledWith(
@@ -49,7 +53,7 @@ it("toggles tool checkbox and includes updated selection in onSubmit", async () 
   const onSubmit = vi.fn();
   render(
     <AgentForm
-      initialValues={{ ...defaultValues, name: "Agent", enabledTools: [] }}
+      initialValues={{ ...defaultValues, name: "Agent", goal: "Do things", systemPrompt: "You are...", enabledTools: [] }}
       onSubmit={onSubmit}
     />
   );
