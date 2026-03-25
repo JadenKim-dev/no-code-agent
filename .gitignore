@@ -4,3 +4,4 @@ frontend/tsconfig.tsbuildinfo
 backend/target
 backend/data
 .env
+docs/**
